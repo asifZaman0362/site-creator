@@ -1,0 +1,103 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: "Inter", -apple-system, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+}
+
+#playground {
+    background: lightgray;
+    overflow-y: scroll;
+    height: 100%;
+    flex: 1 1 1px;
+}
+
+#toolbox {
+    background: #282828;
+    overflow-y: scroll;
+    height: 100%;
+    position: relative;
+    width: 300px;
+    border-right: 1px solid lightgray;
+    z-index: 99;
+}
+
+#properties-panel {
+    background: #ebebeb;
+    overflow-y: scroll;
+    height: 100%;
+    width: 300px;
+}
+
+.template-menu {
+    padding: 0;
+    margin: 0;
+}
+
+.template-menu li {
+    padding: 15px;
+    width: 100%;
+    color: white;
+    font-weight: 500;
+}
+
+.template-menu li:hover {
+    background: #484848;
+}
+
+.template-list {
+    float: left;
+    position: absolute;
+    left: -100px;
+    top: 0;
+    background: #c8c8c8;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 100%;
+    width: 400px;
+    overflow-y: scroll;
+    border-right: 1pt solid #ababab;
+    transition: left 0.5s ease-in-out;
+}
+
+.template-list.shown, .template-list:hover {
+    left: 300px;
+}
+
+.template-item-wrapper {
+    padding: 20px;
+}
+
+.template-wrapper {
+    font-size: 50%;
+}
+
+menu {
+    background: #1d2021;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+menu h1 {
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+menu nav ul li {
+    display: inline-block;
+    margin: 10px;
+}
+
+nav ul {
+    padding: 0;
+    text-align: center;
+}

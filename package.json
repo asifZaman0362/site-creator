@@ -1,0 +1,11 @@
+{
+  "name": "site-creator",
+  "version": "1.0.0",
+  "description": "A HTML5 template based no code site generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "asifZaman0362",
+  "license": "MIT"
+}
