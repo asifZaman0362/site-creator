@@ -21,10 +21,10 @@ body {
 }
 
 #site-header {
-    padding: 15px;
+    padding: 0 15px;
     background: #1d2021;
     color: white;
-    border-bottom: 2px solid #686868;
+    border-bottom: 1px solid #686868;
 }
 
 #site-header h1 {
@@ -45,17 +45,19 @@ body {
 #project-root {
     width: 500px;
     height: 500px;
-    border: 2px solid gray;
+    background: #ebebeb;
+    border-radius: 15px;
 }
 
 #toolbox {
-    background: #282828;
+    background: #fafafa;
     overflow-y: scroll;
     height: 100%;
     position: relative;
     width: 300px;
     border-right: 1px solid lightgray;
     z-index: 99;
+    color: gray;
 }
 
 #properties-panel {
@@ -73,12 +75,12 @@ body {
 .template-menu li {
     padding: 15px;
     width: 100%;
-    color: white;
+    color: #383838;
     font-weight: 500;
 }
 
 .template-menu li:hover {
-    background: #484848;
+    background: #dadada;
 }
 
 .template-list {
@@ -86,7 +88,7 @@ body {
     position: absolute;
     left: -100px;
     top: 0;
-    background: #c8c8c8;
+    background: #dadada;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -115,13 +117,19 @@ body {
 
 .template-wrapper {
     font-size: 50%;
+    border-radius: 10px;
+    clip-path: inset(0px 0px round 10px);
+}
+
+.module {
+    margin-top: 10px;
 }
 
 menu {
     background: #1d2021;
     color: white;
     padding: 20px;
-    border-radius: 10px;
+    margin: 0;
 }
 
 .light {
@@ -153,19 +161,16 @@ nav ul {
 .title {
     padding: 10px 20px;
     background: #eaeaea;
-    border-radius: 10px;
 }
 
 .subtitle {
     padding: 10px 20px;
     background: #eaeaea;
-    border-radius: 10px;
 }
 
 .text {
     padding: 10px 20px;
     background: #eaeaea;
-    border-radius: 10px;
     font-family: serif;
 }
 
@@ -175,7 +180,6 @@ nav ul {
     column-gap: 10px;
     padding: 10px 20px;
     background: #eaeaea;
-    border-radius: 10px;
     font-family: serif;
 }
 
