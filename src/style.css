@@ -123,6 +123,7 @@ body {
 
 .module {
     margin-top: 10px;
+    padding: 20px;
 }
 
 menu {
@@ -159,17 +160,17 @@ nav ul {
 }
 
 .title {
-    padding: 10px 20px;
+    margin: 10px 0;
     background: #eaeaea;
 }
 
 .subtitle {
-    padding: 10px 20px;
+    margin: 0;
     background: #eaeaea;
 }
 
 .text {
-    padding: 10px 20px;
+    padding: 10px 0;
     background: #eaeaea;
     font-family: serif;
 }
@@ -178,7 +179,7 @@ nav ul {
     display: flex;
     flex-direction: row;
     column-gap: 10px;
-    padding: 10px 20px;
+    padding: 10px 0;
     background: #eaeaea;
     font-family: serif;
 }
