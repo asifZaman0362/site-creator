@@ -61,11 +61,36 @@ body {
 }
 
 #properties-panel {
-    background: #ebebeb;
+    background: #fafafa;
+    border-left: 1px solid lightgray;
     overflow-y: scroll;
     height: 100%;
     width: 300px;
+    font-size: 80%;
+    color: #282828;
 }
+
+#properties-panel .element-name {
+    padding: 10px 20px;
+    margin: 0;
+    border-bottom: 1px solid lightgray;
+    text-transform: uppercase;
+}
+
+.inspector-section {
+    border-bottom: 1px solid lightgray;
+    padding: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+}
+
+.inspector-section h2, h3, h4 {
+    margin: 0 0 5px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
 
 .template-menu {
     padding: 0;
@@ -125,6 +150,114 @@ body {
     margin-top: 10px;
     padding: 20px;
 }
+
+/* INSPECTOR TOOLS */
+
+.spacing-box {
+    width: 100%;
+    border: 1px solid lightgray;
+    position: relative;
+    padding: 10px 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 5px;
+}
+
+.spacing-box-bg, .spacing-box-inner-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.spacing-box-inner-border {
+    height: 55%;
+    width: 55%;
+    top: 22%;
+    left: 22%;
+    border: 1px solid #6395eb;
+    border-radius: 2px;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+input {
+    font-size: 90%;
+    width: 35px;
+    height: 20px;
+    margin: 5px;
+    text-align: center;
+    border-radius: 15px;
+    border: 1px solid lightgray;
+}
+
+#left-padding {
+    margin-right: 20px;
+}
+
+#right-padding {
+    margin-left: 20px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.input-wrapper:first-child, .input-wrapper:last-child {
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+.input-wrapper:nth-child(2), .input-wrapper:nth-child(7) {
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+.color-picker-input {
+    display: flex;
+    flex-direction: row;
+    background: white;
+    border: 1px solid lightgray;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.color-picker-input input[type="text"] {
+    border: 0;
+    border-radius: 0;
+    text-align: left;
+    font-size: 100%;
+}
+
+input[type="color"] {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    border: 0;
+    outline: none;
+}
+
+.color-hex-code {
+    flex: 1;
+}
+
+/* MODULES */
 
 menu {
     background: #1d2021;
