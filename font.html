@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fonts</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script src="./fonts.js"></script>
+  <style>
+    .checked {
+      background: lightgray;
+    }
+    .unchecked {
+      background: white;
+    }
+    button {
+      border: 1px solid gray;
+      border-radius: 5px;
+    }
+    #italic {
+      font-style: italic;
+      font-family: serif;
+      font-size: 18px;
+      width: 25px;
+      height: 25px;
+      line-height: 25px;
+    }
+  </style>
+</head>
+<body>
+  <label for="font-selector">Pick a font</label>
+  <select name="font-selector" id="font-selector" onchange="onSelectFont(event)"></select>
+  <h1 id="sample" contenteditable>Lorem Ipsum Dolor Sit Amet</h1>
+  <label for="weight-selector">Font Weight</label>
+  <select name="weight-selector" id="weight-selector" onchange="onSelectWeight(event)"></select>
+  <button onclick="toggleItalic(this)" class="unchecked" id="italic">I</button>
+</body>
+</html>

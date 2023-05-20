@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Builder</title>
   <script src="./index.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -205,28 +206,28 @@
           <div class="spacing-box-inner-border"></div>
           <div class="grid">
             <div class="input-wrapper">
-              <input type="number" name="top-padding" id="top-margin">
+              <input type="number" name="top-margin" id="top-margin" onchange="onMarginChange(this, 'top')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="top-padding" id="top-padding">
+              <input type="number" name="top-padding" id="top-padding" onchange="onPaddingChange(this, 'top')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="left-margin" id="left-margin">
+              <input type="number" name="left-margin" id="left-margin" onchange="onMarginChange(this, 'left')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="left-padding" id="left-padding">
+              <input type="number" name="left-padding" id="left-padding" onchange="onPaddingChange(this, 'left')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="right-padding" id="right-padding">
+              <input type="number" name="right-padding" id="right-padding" onchange="onPaddingChange(this, 'right')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="right-margin" id="right-margin">
+              <input type="number" name="right-margin" id="right-margin" onchange="onMarginChange(this, 'right')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="bottom-padding" id="bottom-padding">
+              <input type="number" name="bottom-padding" id="bottom-padding" onchange="onPaddingChange(this, 'bottom')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="bottom-margin" id="bottom-margin">
+              <input type="number" name="bottom-margin" id="bottom-margin" onchange="onMarginChange(this, 'bottom')">
             </div>
           </div>
         </div>
@@ -234,14 +235,14 @@
       <div class="inspector-section">
         <h4 class="inspector-section-heading">BACKGROUND COLOR</h3>
         <div class="color-picker-input">
-          <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)">
+          <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="bg-color">
           <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
         </div>
       </div>
       <div class="inspector-section">
         <h4 class="inspector-section-heading">FOREGROUND COLOR</h3>
         <div class="color-picker-input">
-          <input class="color-preview" type="color" colorfor="fg" onchange="colorUpdate(this)">
+          <input class="color-preview" type="color" colorfor="fg" onchange="colorUpdate(this)" id="fg-color">
           <input class="color-hex-code" type="text" colorfor="fg" value="#000000" onchange="colorHexUpdate(this)">
         </div>
       </div>

@@ -10,6 +10,12 @@ let dropAboveTarget = false;
 
 let context = { type: null, element: null };
 
+
+let fgColorInput = null;
+let bgColorInput = null;
+let [paddingLeftInput, paddingRightInput, paddingTopInput, paddingBottomInput] = [null, null, null, null];
+let [marginLeftInput, marginRightInput, marginTopInput, marginBottomInput] = [null, null, null, null];
+
 // function called when a category is hovered
 function hoverItem(item) {
   if (templateList) {
@@ -81,6 +87,17 @@ function updateInspector() {
 function setEditorContext(item) {
   context.type = item.tagName;
   context.element = item;
+  let styles = getComputedStyle(item);
+  paddingBottomInput.value = parseInt(styles.paddingBottom);
+  paddingTopInput.value = parseInt(styles.paddingTop);
+  paddingLeftInput.value = parseInt(styles.paddingLeft);
+  paddingRightInput.value = parseInt(styles.paddingBottom);
+  marginBottomInput.value = parseInt(styles.marginBottom);
+  marginTopInput.value = parseInt(styles.marginTop);
+  marginLeftInput.value = parseInt(styles.marginLeft);
+  marginRightInput.value = parseInt(styles.marginBottom);
+  bgColorInput.value = rgbStringToHex(styles.backgroundColor);
+  fgColorInput.value = rgbStringToHex(styles.color);
 }
 
 function generateRandomId() {
@@ -88,10 +105,13 @@ function generateRandomId() {
 }
 
 function makeContentEditableRecursive(element) {
-  element.contentEditable = true;
+  //element.contentEditable = true;
   element.addEventListener("click", () => setEditorContext(element));
   for (let child of element.children) {
-    makeContentEditableRecursive(child);
+    child.contentEditable = true;
+    console.debug(child);
+    child.addEventListener("click", () => { console.debug(element); setEditorContext(element) });
+    //makeContentEditableRecursive(child);
   }
 }
 
@@ -159,6 +179,16 @@ function setup() {
     projectRoot.ondrop = drop;
   }
   createSpacingBoxImage();
+  paddingTopInput = document.querySelector("#top-padding");
+  paddingBottomInput = document.querySelector("#bottom-padding");
+  paddingLeftInput = document.querySelector("#left-padding");
+  paddingRightInput = document.querySelector("#right-padding");
+  marginTopInput = document.querySelector("#top-margin");
+  marginBottomInput = document.querySelector("#bottom-margin");
+  marginLeftInput = document.querySelector("#left-margin");
+  marginRightInput = document.querySelector("#right-margin");
+  fgColorInput = document.querySelector("#fg-color");
+  bgColorInput = document.querySelector("#bg-color");
 }
 
 window.addEventListener("load", setup);
@@ -202,3 +232,55 @@ function createSpacingBoxImage() {
   }
 }
 
+function onPaddingChange(element, direction) {
+  let val = element.value;
+  if (context.element) {
+    switch (direction) {
+      case "top":
+        context.element.style.paddingTop = `${val}px`;
+        break;
+      case "right":
+        context.element.style.paddingRight = `${val}px`;
+        break;
+      case "bottom":
+        context.element.style.paddingBottom = `${val}px`;
+        break;
+      case "left":
+        context.element.style.paddingLeft = `${val}px`;
+        break;
+    }
+  }
+}
+
+function rgbStringToHex(rgb) {
+  const matches = rgb.match(/(\d+)/g);
+  const hex = rgbToHex(matches[0], matches[1], matches[2]);
+  return hex;
+}
+
+function rgbToHex(r, g, b) {
+  const red = Number(r).toString(16).padStart(2, '0');
+  const green = Number(g).toString(16).padStart(2, '0');
+  const blue = Number(b).toString(16).padStart(2, '0');
+  return `#${red}${green}${blue}`;
+}
+
+function onMarginChange(element, direction) {
+  let val = element.value;
+  if (context.element) {
+    switch (direction) {
+      case "top":
+        context.element.style.marginTop = `${val}px`;
+        break;
+      case "right":
+        context.element.style.marginRight = `${val}px`;
+        break;
+      case "bottom":
+        context.element.style.marginBottom = `${val}px`;
+        break;
+      case "left":
+        context.element.style.marginLeft = `${val}px`;
+        break;
+    }
+  }
+}
