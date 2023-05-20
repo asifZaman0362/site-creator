@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Builder</title>
-  <script src="./index.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script src="./index.js"></script>
+  <script src="./fonts.js"></script>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -244,6 +245,17 @@
         <div class="color-picker-input">
           <input class="color-preview" type="color" colorfor="fg" onchange="colorUpdate(this)" id="fg-color">
           <input class="color-hex-code" type="text" colorfor="fg" value="#000000" onchange="colorHexUpdate(this)">
+        </div>
+      </div>
+      <div class="inspector-section">
+        <h4 class="inspector-section-heading">FONTS</h3>
+        <div class="font-selector">
+          <select name="font-selector" id="font-selector" onchange="onSelectFont(event)"></select>
+          <div class="row">
+            <select name="weight-selector" id="weight-selector" onchange="onSelectWeight(event)"></select>
+            <button id="italic">I</button>
+            <input type="number" onchange="setFontSize(this)">
+          </div>
         </div>
       </div>
     </div>
