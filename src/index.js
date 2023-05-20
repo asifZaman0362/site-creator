@@ -15,6 +15,7 @@ let fgColorInput = null;
 let bgColorInput = null;
 let [paddingLeftInput, paddingRightInput, paddingTopInput, paddingBottomInput] = [null, null, null, null];
 let [marginLeftInput, marginRightInput, marginTopInput, marginBottomInput] = [null, null, null, null];
+let contextHint = null;
 
 // function called when a category is hovered
 function hoverItem(item) {
@@ -87,6 +88,7 @@ function updateInspector() {
 function setEditorContext(item) {
   context.type = item.tagName;
   context.element = item;
+  contextHint.innerHTML = `${context.type}`;
   let styles = getComputedStyle(item);
   paddingBottomInput.value = parseInt(styles.paddingBottom);
   paddingTopInput.value = parseInt(styles.paddingTop);
@@ -105,13 +107,19 @@ function generateRandomId() {
 }
 
 function makeContentEditableRecursive(element) {
-  //element.contentEditable = true;
-  element.addEventListener("click", () => setEditorContext(element));
+  element.contentEditable = true;
+  element.addEventListener("click", (event) => {
+    setEditorContext(element)
+    event.stopPropagation();
+  });
   for (let child of element.children) {
-    child.contentEditable = true;
+    /*child.contentEditable = true;
     console.debug(child);
-    child.addEventListener("click", () => { console.debug(element); setEditorContext(element) });
-    //makeContentEditableRecursive(child);
+    child.addEventListener("click", (event) => {
+      console.debug(element); setEditorContext(element)
+      event.stopPropagation();
+    });*/
+    makeContentEditableRecursive(child);
   }
 }
 
@@ -189,6 +197,7 @@ function setup() {
   marginRightInput = document.querySelector("#right-margin");
   fgColorInput = document.querySelector("#fg-color");
   bgColorInput = document.querySelector("#bg-color");
+  contextHint = document.querySelector("#context");
 }
 
 window.addEventListener("load", setup);
