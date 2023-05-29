@@ -10,6 +10,8 @@ let dropAboveTarget = false;
 
 let context = { type: null, element: null };
 
+let lastHighlight = null;
+
 
 let fgColorInput = null;
 let bgColorInput = null;
@@ -86,6 +88,9 @@ function updateInspector() {
 
 // set the context for the editor to show appropriate options based on the element being edited
 function setEditorContext(item) {
+  if (context.element) {
+    context.element.contentEditable = false;
+  }
   context.type = item.tagName;
   context.element = item;
   contextHint.innerHTML = `${context.type}`;
@@ -106,8 +111,24 @@ function generateRandomId() {
   return crypto.randomUUID();
 }
 
+function highlightElement(element) {
+  if (lastHighlight) {
+    lastHighlight.classList.remove('hovered');
+  }
+  lastHighlight = element;
+  element.classList.add('hovered');
+}
+
 function makeContentEditableRecursive(element) {
   element.contentEditable = true;
+  element.addEventListener('mouseenter', (event) => {
+    highlightElement(element);
+    event.stopPropagation();
+  });
+  element.addEventListener('mouseleave', (event) => {
+    element.classList.remove('hovered');
+    event.stopPropagation();
+  });
   element.addEventListener("click", (event) => {
     setEditorContext(element)
     event.stopPropagation();
