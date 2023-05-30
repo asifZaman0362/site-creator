@@ -12,6 +12,8 @@ let context = { type: null, element: null };
 
 let lastHighlight = null;
 
+let highlight = null;
+
 
 let fgColorInput = null;
 let bgColorInput = null;
@@ -117,6 +119,7 @@ function highlightElement(element) {
   }
   lastHighlight = element;
   element.classList.add('hovered');
+  showHighlightElement(element);
 }
 
 function makeContentEditableRecursive(element) {
@@ -199,6 +202,7 @@ function setup() {
   templateList = document.querySelector("#template-list");
   let elements = document.getElementsByClassName("template-item-wrapper");
   for (let element of elements) {
+    console.debug(element);
     element.draggable = true;
     element.ondragstart = startDrag;
   }
@@ -219,6 +223,7 @@ function setup() {
   fgColorInput = document.querySelector("#fg-color");
   bgColorInput = document.querySelector("#bg-color");
   contextHint = document.querySelector("#context");
+  highlight = document.querySelector("#highlight");
 }
 
 window.addEventListener("load", setup);
@@ -313,4 +318,18 @@ function onMarginChange(element, direction) {
         break;
     }
   }
+}
+
+function showHighlightElement(element) {
+  let rect = element.getBoundingClientRect();
+  let styles = getComputedStyle(element);
+  let left = rect.left - parseInt(styles.marginLeft) - window.pageXOffset;
+  let width = rect.width + parseInt(styles.marginLeft) + parseInt(styles.marginRight);
+  let height = rect.height + parseInt(styles.marginTop) + parseInt(styles.marginBottom);
+  let top = rect.top - window.pageYOffset - parseInt(styles.marginTop);
+  highlight.style.left = `${left}px`;
+  highlight.style.top = `${top}px`;
+  highlight.style.width = `${width}px`;
+  highlight.style.height = `${height}px`;
+  console.debug(left, width, height, top);
 }
