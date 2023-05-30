@@ -8,6 +8,7 @@
   <script src="./index.js"></script>
   <script src="./fonts.js"></script>
   <link rel="stylesheet" href="./style.css">
+  <script src="https://kit.fontawesome.com/c76a7d16cf.js" crossorigin="anonymous"></script>
 </head>
 <body>
   <div id="highlight"></div>
@@ -249,6 +250,19 @@
             </div>
           </div>
         </div>
+        <h4 class="inspector-section-heading">Size</h3>
+        <div class="row">
+          <div class="input-container">
+            <i class="fa-solid fa-arrows-left-right"></i>
+            <input type="number" class="nobg" name="height" id="height-input" onchange="onHeightChanged(this)">
+            <span class="pixel">px</span>
+          </div>
+          <div class="input-container">
+            <i class="fa-solid fa-arrows-up-down"></i>
+            <input type="number" class="nobg" name="width" id="width-input" onchange="onWidthChanged(this)">
+            <span class="pixel">px</span>
+          </div>
+        </div>
       </div>
       <div class="inspector-section">
         <h4 class="inspector-section-heading">BACKGROUND COLOR</h3>
@@ -264,15 +278,71 @@
           <input class="color-hex-code" type="text" colorfor="fg" value="#000000" onchange="colorHexUpdate(this)">
         </div>
       </div>
-      <div class="inspector-section">
-        <h4 class="inspector-section-heading">FONTS</h3>
+      <div class="inspector-section" id="text-inspector">
+        <h4 class="inspector-section-heading">Text</h4>
         <div class="font-selector">
           <select name="font-selector" id="font-selector" onchange="onSelectFont(event)"></select>
           <div class="row">
-            <select name="weight-selector" id="weight-selector" onchange="onSelectWeight(event)"></select>
-            <button id="italic">I</button>
-            <input type="number" onchange="setFontSize(this)">
+            <select name="weight-selector" id="weight-selector" class="flex-grow" onchange="onSelectWeight(event)"></select>
+            <button id="italic-button" onclick="onItalicChanged(this)" class="flex-grow">
+              <i class="fa-solid fa-italic"></i>
+            </button>
+            <div class="input-container flex-grow">
+              <input type="number" class="nobg" onchange="setFontSize(this)">
+              <span class="pixel">px</span>
+            </div>
           </div>
+          <div class="row">
+            <div class="input-container">
+              <i class="fa-solid fa-text-height"></i>
+              <input type="number" class="nobg" name="text-height" id="text-height-input" onchange="onTextHeightChanged(this)">
+              <span class="pixel">px</span>
+            </div>
+            <div class="input-container">
+              <i class="fa-solid fa-text-width"></i>
+              <input type="number" class="nobg" name="text-width" id="text-width-input" onchange="onTextWidthChanged(this)">
+              <span class="pixel">px</span>
+            </div>
+          </div>
+          <div class="row">
+            <input type="radio" name="alignment" id="left-align" value="left">
+            <label for="left-align">
+              <i class="fa-solid fa-align-left"></i>
+            </label>
+            <input type="radio" name="alignment" id="centre-align" value="centre">
+            <label for="centre-align">
+              <i class="fa-solid fa-align-center"></i>
+            </label>
+            <input type="radio" name="alignment" id="right-align" value="right">
+            <label for="right-align">
+              <i class="fa-solid fa-align-right"></i>
+            </label>
+            <input type="radio" name="alignment" id="justify-text" value="justify">
+            <label for="justify-text">
+              <i class="fa-solid fa-align-justify"></i>
+            </label>
+          </div>
+          <div class="row">
+            <button id="strikethrough-button" onclick="onStrikethroughCheck(this)">
+              <i class="fa-solid fa-strikethrough"></i>
+            </button>
+            <button id="underline-checkbox" onclick="onUnderlineCheck(this)">
+              <label for="underline">
+                <i class="fa-solid fa-underline"></i>
+              </label>
+            </button>
+            <button id="capitalize-checkbox" onclick="onCapitalizeCheck(this)">
+              <label for="capitalize">
+                <i class="fa-solid fa-font"></i>
+              </label>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="inspector-section" id="url-selector" style="display: none;">
+        <h4 class="inspector-section-heading">URL</h3>
+        <div class="url-selector">
+          <input type="text" name="url" id="url-input" onchange="onUrlChanged(this)">
         </div>
       </div>
     </div>

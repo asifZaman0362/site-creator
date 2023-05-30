@@ -21,6 +21,11 @@ let [paddingLeftInput, paddingRightInput, paddingTopInput, paddingBottomInput] =
 let [marginLeftInput, marginRightInput, marginTopInput, marginBottomInput] = [null, null, null, null];
 let contextHint = null;
 
+let fontInspector = null;
+let imageInspector = null;
+let urlInspector = null;
+
+
 // function called when a category is hovered
 function hoverItem(item) {
   if (templateList) {
@@ -71,15 +76,28 @@ function updateInspector() {
       break;
     }
     case "IMG": {
+      urlInspector.style.display = "block";
+      urlInspector.querySelector('input').value = context.element.src;
       break;
     }
-    case "H1": {
-      break;
-    }
-    case "P": {
+    case "H1":
+    case "H2":
+    case "H3":
+    case "H4":
+    case "H5":
+    case "H6":
+    case "P":
+    case "SPAN":
+    case "LI": {
+      if (context.element.children.length == 0) {
+        context.element.contentEditable = true;
+        context.element.focus();
+      }
       break;
     }
     case "A": {
+      context.element.contentEditable = true;
+      urlInspector.style.display = "block";
       break;
     }
     default: {
@@ -107,6 +125,7 @@ function setEditorContext(item) {
   marginRightInput.value = parseInt(styles.marginBottom);
   bgColorInput.value = rgbStringToHex(styles.backgroundColor);
   fgColorInput.value = rgbStringToHex(styles.color);
+  updateInspector();
 }
 
 function generateRandomId() {
@@ -123,7 +142,7 @@ function highlightElement(element) {
 }
 
 function makeContentEditableRecursive(element) {
-  element.contentEditable = true;
+  //element.contentEditable = true;
   element.addEventListener('mouseenter', (event) => {
     highlightElement(element);
     event.stopPropagation();
@@ -224,6 +243,7 @@ function setup() {
   bgColorInput = document.querySelector("#bg-color");
   contextHint = document.querySelector("#context");
   highlight = document.querySelector("#highlight");
+  urlInspector = document.querySelector("#url-selector");
 }
 
 window.addEventListener("load", setup);
@@ -317,6 +337,16 @@ function onMarginChange(element, direction) {
         context.element.style.marginLeft = `${val}px`;
         break;
     }
+  }
+}
+
+function onUrlChanged(element) {
+  let value = element.value;
+  if (context.element) {
+    if (context.type == "DIV" || context.type == "IMG")
+      context.element.src = value;
+    else if (context.type == "A")
+      context.element.href = value;
   }
 }
 
