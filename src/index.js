@@ -25,6 +25,8 @@ let fontInspector = null;
 let imageInspector = null;
 let urlInspector = null;
 
+let state = new VersionHistory();
+
 
 // function called when a category is hovered
 function hoverItem(item) {
@@ -304,6 +306,37 @@ function onPaddingChange(element, direction) {
         context.element.style.paddingLeft = `${val}px`;
         break;
     }
+  }
+}
+
+function onHeightChanged(input) {
+  let value = input.value;
+  if (context.element) {
+    let before = context.element.style.height;
+    context.element.style.height = `${value}px`;
+  }
+}
+
+function onWidthChanged(input) {
+  let value = input.value;
+  if (context.element) {
+    let before = context.element.style.width;
+    context.element.style.width = `${value}px`;
+  }
+}
+
+function onStyleChange(input, attribute, unit) {
+  let value = input.value;
+  let newValue = value + unit;
+  if (context.element) {
+    let original = context.element.style[attribute];
+    state.change({
+      type: "Style",
+      element: context.element,
+      attribute: attribute,
+      from: original,
+      to: newValue
+    });
   }
 }
 
