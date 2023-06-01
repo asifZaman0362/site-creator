@@ -96,7 +96,8 @@ function onSelectFont(_event) {
     let picked = list.options[list.selectedIndex].value;
     addFont(picked);
     console.log("selecting ", picked);
-    context.element.style.fontFamily = picked;
+    //context.element.style.fontFamily = picked;
+    onStyleChangeUpdate(picked, 'fontFamily', '');
     while (weightList.options.length > 0)
       weightList.options.remove(0);
     getVariantInfo(picked).weights.forEach(item => {
@@ -112,7 +113,8 @@ function onSelectFont(_event) {
 function onSelectWeight(_event) {
   if (weightList && context.element) {
     let picked = weightList.options[weightList.selectedIndex].value;
-    context.element.style.fontWeight = picked;
+    //context.element.style.fontWeight = picked;
+    onStyleChangeUpdate(picked, 'fontWeight', '');
   }
 }
 
@@ -126,10 +128,12 @@ function updateItalicButtonState(value) {
 function toggleItalic() {
   if (!context.element) return;
   if (context.element.style.fontStyle == "italic") {
-    context.element.style.fontStyle = "normal";
+    //context.element.style.fontStyle = "normal";
+    onStyleChangeUpdate('normal', 'fontStyle', '');
     updateItalicButtonState(false);
   } else {
-    context.element.style.fontStyle = "italic";
+    //context.element.style.fontStyle = "italic";
+    onStyleChangeUpdate('italic', 'fontStyle', '');
     updateItalicButtonState(true);
   }
 }
@@ -137,6 +141,7 @@ function toggleItalic() {
 function setFontSize(input) {
   if (context.element) {
     context.element.style.fontSize = `${input.value}px`;
+    onStyleChange(input, 'fontStyle', 'px');
   }
 }
 

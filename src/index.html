@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Builder</title>
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script src="./state.js"></script>
   <script src="./index.js"></script>
   <script src="./fonts.js"></script>
   <link rel="stylesheet" href="./style.css">
@@ -17,8 +18,7 @@
   </header>
   <div id="workspace">
     <div id="toolbox">
-      <ul class="template-menu" onmouseout="stopHover()">
-        <li onmouseover="hoverItem('basic')">
+      <ul class="template-menu" onmouseout="stopHover()"> <li onmouseover="hoverItem('basic')">
           <span class="template-category">Basic Module</span>
         </li>
         <li onmouseover="hoverItem('menu')">
@@ -254,14 +254,21 @@
         <div class="row">
           <div class="input-container">
             <i class="fa-solid fa-arrows-left-right"></i>
-            <input type="number" class="nobg" name="height" id="height-input" onchange="onHeightChanged(this)">
+            <input type="number" class="nobg" name="height" id="height-input" onchange="onStyleChange(this, 'height', 'px')">
             <span class="pixel">px</span>
           </div>
           <div class="input-container">
             <i class="fa-solid fa-arrows-up-down"></i>
-            <input type="number" class="nobg" name="width" id="width-input" onchange="onWidthChanged(this)">
+            <input type="number" class="nobg" name="width" id="width-input" onchange="onStyleChange(this, 'height', 'px')">
             <span class="pixel">px</span>
           </div>
+        </div>
+      </div>
+      <div class="inspector-section">
+        <h4 class="inspector-section-heading">Border Radius</h3>
+        <div class="color-picker-input">
+          <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="bg-color">
+          <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
         </div>
       </div>
       <div class="inspector-section">
@@ -288,24 +295,24 @@
               <i class="fa-solid fa-italic"></i>
             </button>
             <div class="input-container flex-grow">
-              <input type="number" class="nobg" onchange="setFontSize(this)">
+              <input type="number" class="nobg" onchange="onStyleChange(this, 'font-size', 'px')">
               <span class="pixel">px</span>
             </div>
           </div>
           <div class="row">
             <div class="input-container">
               <i class="fa-solid fa-text-height"></i>
-              <input type="number" class="nobg" name="text-height" id="text-height-input" onchange="onTextHeightChanged(this)">
+              <input type="number" class="nobg" name="text-height" id="text-height-input" onchange="onStyleChange(this, 'line-height', 'px')">
               <span class="pixel">px</span>
             </div>
             <div class="input-container">
               <i class="fa-solid fa-text-width"></i>
-              <input type="number" class="nobg" name="text-width" id="text-width-input" onchange="onTextWidthChanged(this)">
+              <input type="number" class="nobg" name="text-width" id="text-width-input" onchange="onStyleChange(this, 'letter-spacing', 'px')">
               <span class="pixel">px</span>
             </div>
           </div>
           <div class="row">
-            <input type="radio" name="alignment" id="left-align" value="left">
+            <input type="radio" name="alignment" id="left-align" value="left" onchange="onSelectAlignment(this)">
             <label for="left-align">
               <i class="fa-solid fa-align-left"></i>
             </label>

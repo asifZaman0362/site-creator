@@ -40,32 +40,3 @@ class VersionHistory {
     return this.changePointer.change;
   }
 }
-
-let his = new VersionHistory();
-let thing = document.querySelector("#text");
-
-function undoLast() {
-  let change = his.undo();
-  if (change)
-    thing.innerHTML = change.from;
-}
-
-function redoLast() {
-  let change = his.redo();
-  if (change)
-    thing.innerHTML = change.to;
-}
-
-function onSetText(text) {
-  let change = {
-    from: thing.innerHTML,
-    to: text
-  }
-  his.change(change);
-  thing.innerHTML = text;
-}
-
-document.querySelector("#button").addEventListener('click', (_event) => {
-  let input = document.querySelector("#input").value;
-  onSetText(input);
-});

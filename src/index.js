@@ -253,9 +253,11 @@ window.addEventListener("load", setup);
 function colorChanged(color, fg) {
   if (context.element) {
     if (fg)
-      context.element.style.color = color;
+      //context.element.style.color = color;
+      onStyleChangeUpdate(color, 'color', '');
     else
-      context.element.style.backgroundColor = color;
+      //context.element.style.backgroundColor = color;
+      onStyleChangeUpdate(color, 'backgroundColor', '');
   }
 }
 
@@ -290,7 +292,7 @@ function createSpacingBoxImage() {
 }
 
 function onPaddingChange(element, direction) {
-  let val = element.value;
+  /*let val = element.value;
   if (context.element) {
     switch (direction) {
       case "top":
@@ -306,22 +308,27 @@ function onPaddingChange(element, direction) {
         context.element.style.paddingLeft = `${val}px`;
         break;
     }
-  }
-}
-
-function onHeightChanged(input) {
-  let value = input.value;
+  }*/
+  //let val = element.value;
   if (context.element) {
-    let before = context.element.style.height;
-    context.element.style.height = `${value}px`;
-  }
-}
-
-function onWidthChanged(input) {
-  let value = input.value;
-  if (context.element) {
-    let before = context.element.style.width;
-    context.element.style.width = `${value}px`;
+    switch (direction) {
+      case "top":
+        //context.element.style.paddingTop = `${val}px`;
+        onStyleChange(element, 'paddingTop', 'px');
+        break;
+      case "right":
+        //context.element.style.paddingRight = `${val}px`;
+        onStyleChange(element, 'paddingRight', 'px');
+        break;
+      case "bottom":
+        //context.element.style.paddingBottom = `${val}px`;
+        onStyleChange(element, 'paddingBottom', 'px');
+        break;
+      case "left":
+        //context.element.style.paddingLeft = `${val}px`;
+        onStyleChange(element, 'paddingLeft', 'px');
+        break;
+    }
   }
 }
 
@@ -337,7 +344,62 @@ function onStyleChange(input, attribute, unit) {
       from: original,
       to: newValue
     });
+    context.element.style[attribute] = newValue;
   }
+}
+
+function onStyleChangeUpdate(value, attribute, unit) {
+  let newValue = value + unit;
+  if (context.element) {
+    let original = context.element.style[attribute];
+    state.change({
+      type: "Style",
+      element: context.element,
+      attribute: attribute,
+      from: original,
+      to: newValue
+    });
+    context.element.style[attribute] = newValue;
+  }
+}
+
+function onAttributeChange(attributeName, value) {
+  if (context.element) {
+    let original = context.element.getAttribute(attributeName);
+    state.change({
+      type: "Attribute",
+      element: context.element,
+      attributeName: attributeName,
+      form: original,
+      to: newValue
+    });
+    context.element.setAttribute(attributeName, value);
+  }
+}
+
+function onElementAdd(element, adjacent) {
+  state.change({
+    type: "Add",
+    element: element,
+    adjacent: adjacent
+  });
+}
+
+function onElementRemove(element, before) {
+  state.change({
+    type: "Remove",
+    element: element,
+    before: before
+  });
+}
+
+function onElementReorder(element, adjacent, below) {
+  state.change({
+    type: "Move",
+    element: element,
+    adjacent: adjacent,
+    below: below
+  });
 }
 
 function rgbStringToHex(rgb) {
@@ -354,20 +416,24 @@ function rgbToHex(r, g, b) {
 }
 
 function onMarginChange(element, direction) {
-  let val = element.value;
+  //let val = element.value;
   if (context.element) {
     switch (direction) {
       case "top":
-        context.element.style.marginTop = `${val}px`;
+        //context.element.style.marginTop = `${val}px`;
+        onStyleChange(element, 'marginTop', 'px');
         break;
       case "right":
-        context.element.style.marginRight = `${val}px`;
+        //context.element.style.marginRight = `${val}px`;
+        onStyleChange(element, 'marginRight', 'px');
         break;
       case "bottom":
-        context.element.style.marginBottom = `${val}px`;
+        //context.element.style.marginBottom = `${val}px`;
+        onStyleChange(element, 'marginBottom', 'px');
         break;
       case "left":
-        context.element.style.marginLeft = `${val}px`;
+        //context.element.style.marginLeft = `${val}px`;
+        onStyleChange(element, 'marginLeft', 'px');
         break;
     }
   }
@@ -377,9 +443,11 @@ function onUrlChanged(element) {
   let value = element.value;
   if (context.element) {
     if (context.type == "DIV" || context.type == "IMG")
-      context.element.src = value;
+      //context.element.src = value;
+      onAttributeChange('src', value);
     else if (context.type == "A")
-      context.element.href = value;
+      //context.element.href = value;
+      onAttributeChange('href', value);
   }
 }
 
@@ -395,4 +463,41 @@ function showHighlightElement(element) {
   highlight.style.width = `${width}px`;
   highlight.style.height = `${height}px`;
   console.debug(left, width, height, top);
+}
+
+function updateThingFromHistory(change, undo) {
+  switch (change.type) {
+    case "Add": {
+      console.log("Thing was added now removing it...");
+      break;
+    }
+    case "Remove": {
+      console.log("Thing was removed now adding it back...");
+      break;
+    }
+    case "Style": {
+      change.element.style[change.attribute] = undo ? change.from : change.to;
+      break;
+    }
+    case "Attribute": {
+      change.element.setAttribute(change.attributeName, undo ? change.from : change.to);
+      break;
+    }
+    default: {
+      console.debug(change);
+      break;
+    }
+  }
+}
+
+function undoLast() {
+  let change = state.undo();
+  if (!change) return;
+  updateThingFromHistory(change, true);
+}
+
+function redoLast() {
+  let change = state.redo();
+  if (!change) return;
+  updateThingFromHistory(change, false);
 }
