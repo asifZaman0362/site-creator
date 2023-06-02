@@ -237,28 +237,28 @@
           <div class="spacing-box-inner-border"></div>
           <div class="grid">
             <div class="input-wrapper">
-              <input type="number" name="top-margin" id="top-margin" onchange="onMarginChange(this, 'top')">
+              <input type="number" placeholder="auto" name="top-margin" id="top-margin" onchange="onMarginChange(this, 'top')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="top-padding" id="top-padding" onchange="onPaddingChange(this, 'top')">
+              <input type="number" placeholder="auto" name="top-padding" id="top-padding" onchange="onPaddingChange(this, 'top')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="left-margin" id="left-margin" onchange="onMarginChange(this, 'left')">
+              <input type="number" placeholder="auto" name="left-margin" id="left-margin" onchange="onMarginChange(this, 'left')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="left-padding" id="left-padding" onchange="onPaddingChange(this, 'left')">
+              <input type="number" placeholder="auto" name="left-padding" id="left-padding" onchange="onPaddingChange(this, 'left')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="right-padding" id="right-padding" onchange="onPaddingChange(this, 'right')">
+              <input type="number" placeholder="auto" name="right-padding" id="right-padding" onchange="onPaddingChange(this, 'right')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="right-margin" id="right-margin" onchange="onMarginChange(this, 'right')">
+              <input type="number" name="right-margin" placeholder="auto" id="right-margin" onchange="onMarginChange(this, 'right')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="bottom-padding" id="bottom-padding" onchange="onPaddingChange(this, 'bottom')">
+              <input type="number" name="bottom-padding" placeholder="auto" id="bottom-padding" onchange="onPaddingChange(this, 'bottom')">
             </div>
             <div class="input-wrapper">
-              <input type="number" name="bottom-margin" id="bottom-margin" onchange="onMarginChange(this, 'bottom')">
+              <input type="number" name="bottom-margin" placeholder="auto" id="bottom-margin" onchange="onMarginChange(this, 'bottom')">
             </div>
           </div>
         </div>
@@ -266,12 +266,12 @@
         <div class="row">
           <div class="input-container">
             <i class="fa-solid fa-arrows-left-right"></i>
-            <input type="number" class="nobg" name="height" id="height-input" onchange="onStyleChange(this, 'height', 'px')">
+            <input type="number" class="nobg" name="height" placeholder="auto" id="height-input" onchange="onStyleChange(this, 'height', 'px')">
             <span class="pixel">px</span>
           </div>
           <div class="input-container">
             <i class="fa-solid fa-arrows-up-down"></i>
-            <input type="number" class="nobg" name="width" id="width-input" onchange="onStyleChange(this, 'height', 'px')">
+            <input type="number" class="nobg" name="width" placeholder="auto" id="width-input" onchange="onStyleChange(this, 'height', 'px')">
             <span class="pixel">px</span>
           </div>
         </div>
@@ -279,23 +279,23 @@
       <div class="inspector-section" id="border-radius-slider">
         <h4 class="inspector-section-heading">Border Radius</h3>
         <div class="slider-input">
-          <input type="range" name="border-radius" min="0" max="100" onchange="onBorderRadiusChange(this)">
+          <input type="range" name="border-radius" min="0" max="100" onchange="onStyleChange(this, 'borderRadius', 'px')">
           <div class="row" id="border-radius-editor">
             <div class="input-container">
               <i class="fa-solid fa-border-top-left"></i>
-              <input type="number" class="nobg small" name="top-left-radius" id="top-left-radius" onchange="onStyleChange(this, 'borderTopLeftRadius', 'px')">
+              <input type="number" class="nobg small" name="top-left-radius" value="0" id="top-left-radius" onchange="onStyleChange(this, 'borderTopLeftRadius', 'px')">
             </div>
             <div class="input-container">
               <i class="fa-solid fa-border-top-left" style="rotate: 90deg"></i>
-              <input type="number" class="nobg small" name="top-right-radius" id="top-right-radius" onchange="onStyleChange(this, 'borderTopRightRadius', 'px')">
+              <input type="number" class="nobg small" name="top-right-radius" value="0" id="top-right-radius" onchange="onStyleChange(this, 'borderTopRightRadius', 'px')">
             </div>
             <div class="input-container">
               <i class="fa-solid fa-border-top-left" style="rotate: -90deg"></i>
-              <input type="number" class="nobg small" name="bottom-left-radius" id="bottom-left-radius" onchange="onStyleChange(this, 'borderBottomLeftRadius', 'px')">
+              <input type="number" class="nobg small" name="bottom-left-radius" value="0" id="bottom-left-radius" onchange="onStyleChange(this, 'borderBottomLeftRadius', 'px')">
             </div>
             <div class="input-container">
               <i class="fa-solid fa-border-top-left" style="rotate: -180deg"></i>
-              <input type="number" class="nobg small" name="bottom-right-radius" id="bottom-right-radius" onchange="onStyleChange(this, 'borderBottomRightRadius', 'px')">
+              <input type="number" class="nobg small" name="bottom-right-radius" value="0" id="bottom-right-radius" onchange="onStyleChange(this, 'borderBottomRightRadius', 'px')">
             </div>
           </div>
         </div>
@@ -317,26 +317,30 @@
       <div class="inspector-section" id="text-inspector">
         <h4 class="inspector-section-heading">Text</h4>
         <div class="font-selector">
-          <select name="font-selector" id="font-selector" onchange="onSelectFont(event)"></select>
+          <select name="font-selector" id="font-selector" onchange="onSelectFont(event)">
+            <option value="sans-serif">Default</option>
+          </select>
           <div class="row">
-            <select name="weight-selector" id="weight-selector" class="flex-grow" onchange="onSelectWeight(event)"></select>
+            <select name="weight-selector" id="weight-selector" class="flex-grow" onchange="onSelectWeight(event)">
+              <option value="400">Normal</option>
+            </select>
             <button id="italic-button" onclick="onItalicChanged(this)" class="flex-grow">
               <i class="fa-solid fa-italic"></i>
             </button>
             <div class="input-container flex-grow">
-              <input type="number" class="nobg" onchange="onStyleChange(this, 'font-size', 'px')">
+              <input type="number" class="nobg" placeholder="auto" onchange="onStyleChange(this, 'font-size', 'px')">
               <span class="pixel">px</span>
             </div>
           </div>
           <div class="row">
             <div class="input-container">
               <i class="fa-solid fa-text-height"></i>
-              <input type="number" class="nobg" name="text-height" id="text-height-input" onchange="onStyleChange(this, 'lineHeight', 'px')">
+              <input type="number" class="nobg" placeholder="auto" name="text-height" id="text-height-input" onchange="onStyleChange(this, 'lineHeight', 'px')">
               <span class="pixel">px</span>
             </div>
             <div class="input-container">
               <i class="fa-solid fa-text-width"></i>
-              <input type="number" class="nobg" name="text-width" id="text-width-input" onchange="onStyleChange(this, 'letterSpacing', 'px')">
+              <input type="number" class="nobg" placeholder="auto" name="text-width" id="text-width-input" onchange="onStyleChange(this, 'letterSpacing', 'px')">
               <span class="pixel">px</span>
             </div>
           </div>

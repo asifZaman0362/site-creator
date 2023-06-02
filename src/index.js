@@ -135,9 +135,7 @@ function generateRandomId() {
 }
 
 function highlightElement(element) {
-  if (lastHighlight) {
-    lastHighlight.classList.remove('hovered');
-  }
+  if (lastHighlight == element) return;
   lastHighlight = element;
   element.classList.add('hovered');
   showHighlightElement(element);
@@ -145,12 +143,13 @@ function highlightElement(element) {
 
 function makeContentEditableRecursive(element) {
   //element.contentEditable = true;
-  element.addEventListener('mouseenter', (event) => {
+  element.addEventListener('mousemove', (event) => {
+    console.log('moved');
     highlightElement(element);
     event.stopPropagation();
   });
   element.addEventListener('mouseleave', (event) => {
-    element.classList.remove('hovered');
+    removeHighlight();
     event.stopPropagation();
   });
   element.addEventListener("click", (event) => {
@@ -521,6 +520,13 @@ function showHighlightElement(element) {
   highlight.style.width = `${width}px`;
   highlight.style.height = `${height}px`;
   console.debug(left, width, height, top);
+}
+
+function removeHighlight() {
+  //highlight.style.left = "-100px";
+  lastHighlight = null;
+  highlight.style.width = "0";
+  highlight.style.height = "0";
 }
 
 function updateThingFromHistory(change, undo) {
