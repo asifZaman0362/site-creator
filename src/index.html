@@ -15,6 +15,18 @@
   <div id="highlight"></div>
   <header id="site-header">
     <h1>HTML Site Builder</h1>
+    <button onclick="save()">
+      <i class="fa-solid fa-floppy-disk"></i>
+      Save
+    </button>
+    <button onclick="undoLast()">
+      <i class="fa-solid fa-rotate-left"></i>
+      Undo
+    </button>
+    <button onclick="redoLast()">
+      <i class="fa-solid fa-rotate-right"></i>
+      Redo
+    </button>
   </header>
   <div id="workspace">
     <div id="toolbox">
@@ -264,11 +276,28 @@
           </div>
         </div>
       </div>
-      <div class="inspector-section">
+      <div class="inspector-section" id="border-radius-slider">
         <h4 class="inspector-section-heading">Border Radius</h3>
-        <div class="color-picker-input">
-          <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="bg-color">
-          <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
+        <div class="slider-input">
+          <input type="range" name="border-radius" min="0" max="100" onchange="onBorderRadiusChange(this)">
+          <div class="row" id="border-radius-editor">
+            <div class="input-container">
+              <i class="fa-solid fa-border-top-left"></i>
+              <input type="number" class="nobg small" name="top-left-radius" id="top-left-radius" onchange="onStyleChange(this, 'borderTopLeftRadius', 'px')">
+            </div>
+            <div class="input-container">
+              <i class="fa-solid fa-border-top-left" style="rotate: 90deg"></i>
+              <input type="number" class="nobg small" name="top-right-radius" id="top-right-radius" onchange="onStyleChange(this, 'borderTopRightRadius', 'px')">
+            </div>
+            <div class="input-container">
+              <i class="fa-solid fa-border-top-left" style="rotate: -90deg"></i>
+              <input type="number" class="nobg small" name="bottom-left-radius" id="bottom-left-radius" onchange="onStyleChange(this, 'borderBottomLeftRadius', 'px')">
+            </div>
+            <div class="input-container">
+              <i class="fa-solid fa-border-top-left" style="rotate: -180deg"></i>
+              <input type="number" class="nobg small" name="bottom-right-radius" id="bottom-right-radius" onchange="onStyleChange(this, 'borderBottomRightRadius', 'px')">
+            </div>
+          </div>
         </div>
       </div>
       <div class="inspector-section">
@@ -302,12 +331,12 @@
           <div class="row">
             <div class="input-container">
               <i class="fa-solid fa-text-height"></i>
-              <input type="number" class="nobg" name="text-height" id="text-height-input" onchange="onStyleChange(this, 'line-height', 'px')">
+              <input type="number" class="nobg" name="text-height" id="text-height-input" onchange="onStyleChange(this, 'lineHeight', 'px')">
               <span class="pixel">px</span>
             </div>
             <div class="input-container">
               <i class="fa-solid fa-text-width"></i>
-              <input type="number" class="nobg" name="text-width" id="text-width-input" onchange="onStyleChange(this, 'letter-spacing', 'px')">
+              <input type="number" class="nobg" name="text-width" id="text-width-input" onchange="onStyleChange(this, 'letterSpacing', 'px')">
               <span class="pixel">px</span>
             </div>
           </div>
@@ -316,21 +345,21 @@
             <label for="left-align">
               <i class="fa-solid fa-align-left"></i>
             </label>
-            <input type="radio" name="alignment" id="centre-align" value="centre">
+            <input type="radio" name="alignment" id="centre-align" value="center" onchange="onSelectAlignment(this)">
             <label for="centre-align">
               <i class="fa-solid fa-align-center"></i>
             </label>
-            <input type="radio" name="alignment" id="right-align" value="right">
+            <input type="radio" name="alignment" id="right-align" value="right" onchange="onSelectAlignment(this)">
             <label for="right-align">
               <i class="fa-solid fa-align-right"></i>
             </label>
-            <input type="radio" name="alignment" id="justify-text" value="justify">
+            <input type="radio" name="alignment" id="justify-text" value="justify" onchange="onSelectAlignment(this)">
             <label for="justify-text">
               <i class="fa-solid fa-align-justify"></i>
             </label>
           </div>
           <div class="row">
-            <button id="strikethrough-button" onclick="onStrikethroughCheck(this)">
+            <button id="strikethrough-checkbox" onclick="onStrikethroughCheck(this)">
               <i class="fa-solid fa-strikethrough"></i>
             </button>
             <button id="underline-checkbox" onclick="onUnderlineCheck(this)">

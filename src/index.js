@@ -246,6 +246,24 @@ function setup() {
   contextHint = document.querySelector("#context");
   highlight = document.querySelector("#highlight");
   urlInspector = document.querySelector("#url-selector");
+  let sliders = document.querySelectorAll('input[type="range"]');
+  sliders.forEach(item => {
+    const min = item.min
+    const max = item.max
+    const val = item.value
+    item.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    item.addEventListener('input', e => {
+      let target = e.target
+      if (e.target.type !== 'range') {
+        target = document.getElementById('range')
+      }
+      const min = target.min
+      const max = target.max
+      const val = target.value
+      target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    })
+  }
+  );
 }
 
 window.addEventListener("load", setup);
@@ -288,6 +306,46 @@ function createSpacingBoxImage() {
     context.closePath();
     context.strokeStyle = "lightgray";
     context.stroke();
+  }
+}
+
+function onSelectAlignment(input) {
+  if (!context.element) return;
+  onStyleChange(input, 'text-align', '');
+}
+
+function onStrikethroughCheck(input) {
+  if (!context.element) return;
+  if (context.element.style.textDecoration == 'line-through') {
+    onStyleChangeUpdate('none', 'textDecoration', '');
+    input.classList.remove('checked');
+  } else {
+    onStyleChangeUpdate('line-through', 'textDecoration', '');
+    input.classList.add('checked');
+    document.querySelector('#underline-checkbox').classList.remove('checked');
+  }
+}
+
+function onUnderlineCheck(input) {
+  if (!context.element) return;
+  if (context.element.style.textDecoration == 'underline') {
+    onStyleChangeUpdate('none', 'textDecoration', '');
+    input.classList.remove('checked');
+  } else {
+    onStyleChangeUpdate('underline', 'textDecoration', '');
+    input.classList.add('checked');
+    document.querySelector('#strikethrough-checkbox').classList.remove('checked');
+  }
+}
+
+function onCapitalizeCheck(input) {
+  if (!context.element) return;
+  if (context.element.style.textTransform == 'uppercase') {
+    onStyleChangeUpdate('none', 'textTransform', '');
+    input.classList.remove('checked');
+  } else {
+    onStyleChangeUpdate('uppercase', 'textTransform', '');
+    input.classList.add('checked');
   }
 }
 

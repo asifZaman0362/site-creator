@@ -35,16 +35,41 @@ body {
     transition: 0.25s ease-in-out;
 }
 
+#workspace *:focus {
+    outline: 1px solid rgba(90, 200, 200, 1);
+}
+
 #site-header {
     padding: 0 15px;
     background: #1d2021;
     color: white;
     border-bottom: 1px solid #686868;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 #site-header h1 {
     font-size: 20px;
     font-weight: 900;
+    margin-right: 20px;
+}
+
+#site-header button {
+    background: rgb(50, 200, 80);
+    color: white;
+    border: 1px solid green;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    margin: 0 5px;
+}
+
+#site-header i {
+    color: white;
+    font-size: 22px;
 }
 
 #playground {
@@ -168,6 +193,7 @@ body {
 }
 
 /* INSPECTOR TOOLS */
+
 
 .spacing-box {
     width: 100%;
@@ -309,8 +335,15 @@ input[type="color"] {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 10px;
     font-size: 18px;
+}
+
+.input-container i {
+    margin-left: 10px;
+}
+
+.input-container span {
+    margin-right: 10px;
 }
 
 .input-container:not(:last-child) {
@@ -352,6 +385,80 @@ input.nobg {
     border: none;
     border-radius: 0px;
     width: 100%;
+}
+
+input.small {
+    margin: 5px 0 !important;
+}
+
+button.checked i {
+    color: blue !important;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  margin: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 5px;
+  background-image: linear-gradient(gray, gray);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Input Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: white;
+  cursor: ew-resize;
+  border: 2px solid gray;
+}
+
+input[type="range"]::-moz-range-thumb {
+  -webkit-appearance: none;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: white;
+  cursor: ew-resize;
+  border: 2px solid gray;
+}
+
+input[type="range"]::-ms-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #ff4500;
+  cursor: ew-resize;
+  box-shadow: 0 0 2px 0 #555;
+  transition: background .3s ease-in-out;
+}
+
+/* Input Track */
+input[type=range]::-webkit-slider-runnable-track  {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+input[type=range]::-moz-range-track {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+input[type="range"]::-ms-track {
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
 }
 
 /* MODULES */
