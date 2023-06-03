@@ -131,6 +131,10 @@ body {
     text-transform: uppercase;
 }
 
+.hidden {
+    display: none;
+}
+
 
 .template-menu {
     padding: 0;
@@ -468,6 +472,29 @@ input[type="range"]::-ms-track {
   box-shadow: none;
   border: none;
   background: transparent;
+}
+
+button.remove-button {
+  background: white;
+  color: #c64d61;
+  border: 1px solid #c64d61;
+  transition: 0.5s ease-in-out;
+  flex: 1;
+  margin: 20px;
+  height: 50px;
+}
+
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+button.remove-button:hover {
+  background: #c64d61;
+  color: white;
 }
 
 /* MODULES */

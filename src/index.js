@@ -14,6 +14,9 @@ let lastHighlight = null;
 
 let highlight = null;
 
+let siblingPrevious = null;
+let previousBefore = null;
+
 
 let fgColorInput = null;
 let bgColorInput = null;
@@ -24,6 +27,12 @@ let contextHint = null;
 let fontInspector = null;
 let imageInspector = null;
 let urlInspector = null;
+let textInspector = null;
+let sizeInspector = null;
+let shadowInspector = null;
+let bgColorInspector = null;
+let fgColorInspector = null;
+let borderRadiusInspector = null;
 
 let state = new VersionHistory();
 
@@ -72,13 +81,32 @@ function dragOver(ev) {
     ev.dataTransfer.dropEffect = "move";
 }
 
+function hideInspectorFields() {
+  fontInspector?.classList.add('hidden');
+  imageInspector?.classList.add('hidden');
+  urlInspector?.classList.add('hidden');
+  textInspector?.classList.add('hidden');
+  sizeInspector?.classList.add('hidden');
+  shadowInspector?.classList.add('hidden');
+  bgColorInspector?.classList.add('hidden');
+  fgColorInspector?.classList.add('hidden');
+  borderRadiusInspector?.classList.add('hidden');
+}
+
 function updateInspector() {
+  hideInspectorFields();
   switch (context.type) {
-    case "DIV": {
+    case "DIV":
+    case "SECTION":
+    case "ARTICLE":
+    case "MENU": {
+      borderRadiusInspector?.classList.remove('hidden');
+      bgColorInspector?.classList.remove('hidden');
       break;
     }
     case "IMG": {
-      urlInspector.style.display = "block";
+      sizeInspector?.classList.remove('hidden');
+      urlInspector?.classList.remove('hidden');
       urlInspector.querySelector('input').value = context.element.src;
       break;
     }
@@ -91,6 +119,8 @@ function updateInspector() {
     case "P":
     case "SPAN":
     case "LI": {
+      sizeInspector?.classList.remove('hidden');
+      textInspector?.classList.remove('hidden');
       if (context.element.children.length == 0) {
         context.element.contentEditable = true;
         context.element.focus();
@@ -98,11 +128,15 @@ function updateInspector() {
       break;
     }
     case "A": {
+      textInspector?.classList.remove('hidden');
       context.element.contentEditable = true;
-      urlInspector.style.display = "block";
+      urlInspector?.classList.remove('hidden');
+      urlInspector.querySelector('input').value = context.element.src;
       break;
     }
     default: {
+      bgColorInspector?.classList.remove('hidden');
+      sizeInspector?.classList.remove('hidden');
       break;
     }
   }
@@ -184,8 +218,22 @@ function drop(ev) {
       if (dropAboveTarget) {
         relativeTarget.insertAdjacentElement("beforebegin", createdElement);
       } else relativeTarget.insertAdjacentElement("afterend", createdElement);
+      state.change({
+        type: "Add",
+        element: createdElement,
+        sibling: relativeTarget,
+        before: dropAboveTarget,
+        parentElement: projectRoot
+      });
     } else {
       projectRoot.appendChild(createdElement);
+      state.change({
+        type: "Add",
+        element: createdElement,
+        sibling: null,
+        before: false,
+        parentElement: projectRoot
+      });
     }
   } else if (ev.dataTransfer.dropEffect == "move") {
     const id = ev.dataTransfer.getData("text");
@@ -195,6 +243,14 @@ function drop(ev) {
       if (dropAboveTarget) {
         relativeTarget.insertAdjacentElement("beforebegin", element);
       } else relativeTarget.insertAdjacentElement("afterend", element);
+      state.change({
+        type: "Move",
+        element: element,
+        sibling: relativeTarget,
+        before: dropAboveTarget,
+        previous: siblingPrevious,
+        previousBefore: previousBefore
+      });
     } else {
       projectRoot.appendChild(element);
     }
@@ -213,8 +269,39 @@ function startDrag(ev) {
 // the other dragstart handler for existing elements which are to be moved instead being copied
 // unlike menu preview items
 function startDragMove(ev) {
+  if (ev.target.nextSibling) {
+    siblingPrevious = ev.target.nextSibling;
+    previousBefore = true;
+  } if (ev.target.previousSibling) {
+    siblingPrevious = ev.target.previousSibling;
+    previousBefore = false;
+  }
   ev.dataTransfer.effectAllowed = "move";
   ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function removeElement() {
+  if (context.element) {
+    let sibling = null;
+    let before = false;
+    let parentNode = context.element.parentNode;
+    if (context.element.nextSibling) {
+      sibling = context.element.nextSibling;
+      before = true;
+    } else if (context.element.previousSibling) {
+      sibling = context.element.previousSibling;
+    }
+    state.change({
+      type: "Remove",
+      element: context.element,
+      sibling: sibling,
+      before: before,
+      parentNode: parentNode
+    });
+    context.element.remove();
+    context.element = null;
+    context.type = null;
+  }
 }
 
 // entry point, sort of, fires when document loads
@@ -245,6 +332,12 @@ function setup() {
   contextHint = document.querySelector("#context");
   highlight = document.querySelector("#highlight");
   urlInspector = document.querySelector("#url-selector");
+  textInspector = document.querySelector("#text-inspector");
+  sizeInspector = document.querySelector("#size-inspector");
+  shadowInspector = document.querySelector("#shadow-inspector");
+  bgColorInspector = document.querySelector("#background-color-inspector");
+  fgColorInspector = document.querySelector("#foreground-color-inspector");
+  borderRadiusInspector = document.querySelector("#border-radius-slider");
   let sliders = document.querySelectorAll('input[type="range"]');
   sliders.forEach(item => {
     const min = item.min
@@ -345,6 +438,18 @@ function onCapitalizeCheck(input) {
   } else {
     onStyleChangeUpdate('uppercase', 'textTransform', '');
     input.classList.add('checked');
+  }
+}
+
+function onItalicChanged(button) {
+  if (context.element) {
+    if (context.element.style.fontStyle == 'italic') {
+      onStyleChangeUpdate('none', 'fontStyle', '');
+      button.classList.remove('checked');
+    } else {
+      onStyleChangeUpdate('italic', 'fontStyle', '');
+      button.classList.add('checked');
+    }
   }
 }
 
@@ -532,11 +637,62 @@ function removeHighlight() {
 function updateThingFromHistory(change, undo) {
   switch (change.type) {
     case "Add": {
-      console.log("Thing was added now removing it...");
+      let element = change.element;
+      let sibling = change.sibling;
+      let parentElement = change.parentElement;
+      let before = change.before;
+      if (undo) {
+        element.remove();
+      } else {
+        if (sibling) {
+          if (before) {
+            sibling.insertAdjacentElement('beforebegin', element);
+          } else sibling.insertAdjacentElement('afterend', element);
+        } else {
+          parentElement.appendChild(element);
+        }
+      }
       break;
     }
     case "Remove": {
-      console.log("Thing was removed now adding it back...");
+      let element = change.element;
+      let sibling = change.sibling;
+      let before = change.before;
+      let parentNode = change.parentNode;
+      if (undo) {
+        if (sibling) {
+          if (before) {
+            sibling.insertAdjacentElement('beforebegin', element);
+          } else sibling.insertAdjacentElement('afterend', element);
+        } else {
+          parentNode.appendChild(element);
+        }
+      } else {
+        element.redo();
+      }
+      break;
+    }
+    case "Move": {
+      let element = change.element;
+      let sibling = change.sibling;
+      let before = change.before;
+      let previous = change.previous;
+      let previousBefore = change.previousBefore;
+      if (undo) {
+        element.remove();
+        if (previousBefore) {
+          previous.insertAdjacentElement('beforebegin', element);
+        } else {
+          previous.insertAdjacentElement('afterend', element);
+        }
+      } else {
+        element.remove();
+        if (before) {
+          sibling.insertAdjacentElement('beforebegin', element);
+        } else {
+          sibling.insertAdjacentElement('afterend', element);
+        }
+      }
       break;
     }
     case "Style": {

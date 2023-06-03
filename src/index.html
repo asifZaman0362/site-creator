@@ -262,17 +262,19 @@
             </div>
           </div>
         </div>
-        <h4 class="inspector-section-heading">Size</h3>
-        <div class="row">
-          <div class="input-container">
-            <i class="fa-solid fa-arrows-left-right"></i>
-            <input type="number" class="nobg" name="height" placeholder="auto" id="height-input" onchange="onStyleChange(this, 'height', 'px')">
-            <span class="pixel">px</span>
-          </div>
-          <div class="input-container">
-            <i class="fa-solid fa-arrows-up-down"></i>
-            <input type="number" class="nobg" name="width" placeholder="auto" id="width-input" onchange="onStyleChange(this, 'height', 'px')">
-            <span class="pixel">px</span>
+        <div class="inspector-section-wrapper-smaller" id="size-inspector">
+          <h4 class="inspector-section-heading">Size</h3>
+          <div class="row">
+            <div class="input-container">
+              <i class="fa-solid fa-arrows-left-right"></i>
+              <input type="number" class="nobg" name="height" placeholder="auto" id="height-input" onchange="onStyleChange(this, 'height', 'px')">
+              <span class="pixel">px</span>
+            </div>
+            <div class="input-container">
+              <i class="fa-solid fa-arrows-up-down"></i>
+              <input type="number" class="nobg" name="width" placeholder="auto" id="width-input" onchange="onStyleChange(this, 'height', 'px')">
+              <span class="pixel">px</span>
+            </div>
           </div>
         </div>
       </div>
@@ -300,18 +302,11 @@
           </div>
         </div>
       </div>
-      <div class="inspector-section">
+      <div class="inspector-section" id="background-color-inspector">
         <h4 class="inspector-section-heading">BACKGROUND COLOR</h3>
         <div class="color-picker-input">
           <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="bg-color">
           <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
-        </div>
-      </div>
-      <div class="inspector-section">
-        <h4 class="inspector-section-heading">FOREGROUND COLOR</h3>
-        <div class="color-picker-input">
-          <input class="color-preview" type="color" colorfor="fg" onchange="colorUpdate(this)" id="fg-color">
-          <input class="color-hex-code" type="text" colorfor="fg" value="#000000" onchange="colorHexUpdate(this)">
         </div>
       </div>
       <div class="inspector-section" id="text-inspector">
@@ -331,6 +326,10 @@
               <input type="number" class="nobg" placeholder="auto" onchange="onStyleChange(this, 'font-size', 'px')">
               <span class="pixel">px</span>
             </div>
+          </div>
+          <div class="color-picker-input">
+            <input class="color-preview" type="color" colorfor="fg" onchange="colorUpdate(this)" id="fg-color">
+            <input class="color-hex-code" type="text" colorfor="fg" value="#000000" onchange="colorHexUpdate(this)">
           </div>
           <div class="row">
             <div class="input-container">
@@ -379,11 +378,19 @@
           </div>
         </div>
       </div>
-      <div class="inspector-section" id="url-selector" style="display: none;">
+      <div class="inspector-section" id="url-selector">
         <h4 class="inspector-section-heading">URL</h3>
         <div class="url-selector">
           <input type="text" name="url" id="url-input" onchange="onUrlChanged(this)">
         </div>
+      </div>
+      <div class="inspector-section" id="children-inspector">
+        <h4 class="inspector-section-heading">ELEMENTS</h4>
+        <ul>
+        </ul>
+      </div>
+      <div class="flex-row">
+        <button class="remove-button" onclick="removeItem()">Remove</button>
       </div>
     </div>
   </div>
