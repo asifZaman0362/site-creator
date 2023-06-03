@@ -33,6 +33,7 @@ let shadowInspector = null;
 let bgColorInspector = null;
 let fgColorInspector = null;
 let borderRadiusInspector = null;
+let removeButton = null;
 
 let state = new VersionHistory();
 
@@ -91,10 +92,17 @@ function hideInspectorFields() {
   bgColorInspector?.classList.add('hidden');
   fgColorInspector?.classList.add('hidden');
   borderRadiusInspector?.classList.add('hidden');
+  removeButton?.classList.add('hidden');
 }
 
 function updateInspector() {
   hideInspectorFields();
+  if (context.element.classList.contains('module')) {
+    borderRadiusInspector?.classList.remove('hidden');
+    bgColorInspector?.classList.remove('hidden');
+    removeButton?.classList.remove('hidden');
+    return;
+  }
   switch (context.type) {
     case "DIV":
     case "SECTION":
@@ -102,6 +110,7 @@ function updateInspector() {
     case "MENU": {
       borderRadiusInspector?.classList.remove('hidden');
       bgColorInspector?.classList.remove('hidden');
+      sizeInspector?.classList.remove('hidden');
       break;
     }
     case "IMG": {
@@ -280,7 +289,7 @@ function startDragMove(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
 }
 
-function removeElement() {
+function removeItem() {
   if (context.element) {
     let sibling = null;
     let before = false;
@@ -338,6 +347,7 @@ function setup() {
   bgColorInspector = document.querySelector("#background-color-inspector");
   fgColorInspector = document.querySelector("#foreground-color-inspector");
   borderRadiusInspector = document.querySelector("#border-radius-slider");
+  removeButton = document.querySelector("#remove-button");
   let sliders = document.querySelectorAll('input[type="range"]');
   sliders.forEach(item => {
     const min = item.min
@@ -668,7 +678,7 @@ function updateThingFromHistory(change, undo) {
           parentNode.appendChild(element);
         }
       } else {
-        element.redo();
+        element.remove();
       }
       break;
     }
