@@ -34,6 +34,7 @@ let bgColorInspector = null;
 let fgColorInspector = null;
 let borderRadiusInspector = null;
 let removeButton = null;
+let childrenInspector = null;
 
 let state = new VersionHistory();
 
@@ -93,6 +94,90 @@ function hideInspectorFields() {
   fgColorInspector?.classList.add('hidden');
   borderRadiusInspector?.classList.add('hidden');
   removeButton?.classList.add('hidden');
+  childrenInspector?.classList.add('hidden');
+}
+
+function getChildrenNodesRecursive(element) {
+  let item = document.createElement('li');
+  item.classList.add('list-item');
+  let icon = document.createElement('i');
+  let label = document.createElement('span');
+  icon.classList.add('fa-solid');
+  switch (element.tagName) {
+    case "A":
+      icon.classList.add('fa-link');
+      label.innerHTML = "Link";
+      break;
+    case "UL":
+    case "OL":
+      icon.classList.add('fa-list');
+      label.innerHTML = "List";
+      break;
+    case "IMG":
+      icon.classList.add('fa-image');
+      label.innerHTML = "Image";
+      break;
+    case "P":
+    case "SPAN":
+    case "H1":
+    case "H2":
+    case "H3":
+    case "H4":
+    case "H5":
+    case "H6":
+    case "PRE":
+      icon.classList.add('fa-font');
+      label.innerHTML = "Text";
+      break;
+    default:
+      icon.classList.add('fa-square');
+      label.innerHTML = "Div";
+      break;
+  }
+  let button = document.createElement('button');
+  button.classList.add('toggle', 'fa-solid');
+  console.debug(element);
+  if (element.style.display == 'none') {
+    button.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    button.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+  button.addEventListener('click', _ev => {
+    if (element.style.display == 'none') {
+      element.style.display = 'auto';
+      button.classList.replace('fa-eye-slash', 'fa-eye');
+    } else {
+      element.style.display = 'none';
+      button.classList.replace('fa-eye', 'fa-eye-slash');
+    }
+  });
+  item.appendChild(icon);
+  item.appendChild(label);
+  item.appendChild(button);
+  if (element.children.length == 0) return item;
+  else {
+    let itemWrapper = document.createElement('li');
+    itemWrapper.classList.add('list-item-wrapper');
+    itemWrapper.appendChild(item);
+    let list = document.createElement('ul');
+    list.classList.add('children-list');
+    for (let i = 0; i < element.children.length; i++) {
+      list.appendChild(getChildrenNodesRecursive(element.children[i]));
+    }
+    itemWrapper.appendChild(list);
+    return itemWrapper;
+  }
+}
+
+function showChildren() {
+  if (context.element) {
+    childrenInspector.classList.remove('hidden');
+    let list = childrenInspector.querySelector('ul');
+    list.innerHTML = '';
+    for (let i = 0; i < context.element.children.length; i++) {
+      list.appendChild(getChildrenNodesRecursive(context.element.children[i]));
+    }
+  }
 }
 
 function updateInspector() {
@@ -101,6 +186,7 @@ function updateInspector() {
     borderRadiusInspector?.classList.remove('hidden');
     bgColorInspector?.classList.remove('hidden');
     removeButton?.classList.remove('hidden');
+    showChildren();
     return;
   }
   switch (context.type) {
@@ -111,6 +197,8 @@ function updateInspector() {
       borderRadiusInspector?.classList.remove('hidden');
       bgColorInspector?.classList.remove('hidden');
       sizeInspector?.classList.remove('hidden');
+      if (context.element.children.length > 0)
+        showChildren();
       break;
     }
     case "IMG": {
@@ -133,6 +221,8 @@ function updateInspector() {
       if (context.element.children.length == 0) {
         context.element.contentEditable = true;
         context.element.focus();
+      } else {
+        childrenInspector?.classList.remove('hidden');
       }
       break;
     }
@@ -146,6 +236,8 @@ function updateInspector() {
     default: {
       bgColorInspector?.classList.remove('hidden');
       sizeInspector?.classList.remove('hidden');
+      if (context.element.children.length > 0)
+        showChildren();
       break;
     }
   }
@@ -348,6 +440,7 @@ function setup() {
   fgColorInspector = document.querySelector("#foreground-color-inspector");
   borderRadiusInspector = document.querySelector("#border-radius-slider");
   removeButton = document.querySelector("#remove-button");
+  childrenInspector = document.querySelector('#children-inspector');
   let sliders = document.querySelectorAll('input[type="range"]');
   sliders.forEach(item => {
     const min = item.min
