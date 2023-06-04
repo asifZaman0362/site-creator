@@ -108,6 +108,11 @@ body {
     font-size: 80%;
     color: #282828;
     overflow: scroll;
+    scrollbar-width: none;
+}
+
+#properties-panel::-webkit-scrollbar {
+    width: 0 !important;
 }
 
 #properties-panel .element-name {
@@ -119,14 +124,14 @@ body {
 
 .inspector-section {
     border-bottom: 1px solid lightgray;
-    padding: 20px 20px;
+    padding: 0px 20px 15px;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
 }
 
 .inspector-section h2, h3, h4 {
-    margin: 0 0 5px;
+    margin: 15px 0 10px;
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -246,6 +251,13 @@ input {
     border-radius: 15px;
     border: 1px solid lightgray;
     background: transparent;
+    margin: 5px 0px;
+}
+
+select {
+    background: white;
+    border: 1px solid lightgray;
+    border-radius: 5px;
 }
 
 .flex-grow {
@@ -320,6 +332,7 @@ input[type="color"] {
     padding: 0;
     border: 0;
     outline: none;
+    margin: 0;
 }
 
 input[type="color"]:focus {
@@ -495,6 +508,27 @@ button.remove-button {
 button.remove-button:hover {
   background: #c64d61;
   color: white;
+}
+
+#children-inspector ul {
+    list-style: none;
+    padding: 0;
+}
+
+#children-inspector ul ul {
+    padding: 0 0 0 15px;
+}
+
+.list-item {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    margin: 10px;
+    font-size: 16px;
+}
+
+.list-item span {
+    flex: 1;
 }
 
 /* MODULES */

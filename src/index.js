@@ -37,10 +37,17 @@ let removeButton = null;
 let childrenInspector = null;
 
 let state = new VersionHistory();
+let timeout = null;
 
+function hoverItem(item) {
+  if (timeout) {
+    clearTimeout(timeout);
+  }
+  timeout = setTimeout(() => hovered(item), 250);
+}
 
 // function called when a category is hovered
-function hoverItem(item) {
+function hovered(item) {
   if (templateList) {
     templateList.classList.add("shown");
     if (selectedCategory) selectedCategory.classList.remove("active");
@@ -49,8 +56,13 @@ function hoverItem(item) {
   }
 }
 
-// function called when menu is no longer hovered on
 function stopHover() {
+  clearTimeout(timeout);
+  timeout = setTimeout(hoverStopped, 500);
+}
+
+// function called when menu is no longer hovered on
+function hoverStopped() {
   if (templateList)
     templateList.classList.remove("shown");
 }
@@ -134,20 +146,22 @@ function getChildrenNodesRecursive(element) {
       label.innerHTML = "Div";
       break;
   }
-  let button = document.createElement('button');
+  let button = document.createElement('i');
   button.classList.add('toggle', 'fa-solid');
   console.debug(element);
   if (element.style.display == 'none') {
-    button.classList.replace('fa-eye', 'fa-eye-slash');
+    button.classList.remove('fa-eye');
+    button.classList.add('fa-eye-slash');
   } else {
-    button.classList.replace('fa-eye-slash', 'fa-eye');
+    button.classList.remove('fa-eye-slash');
+    button.classList.add('fa-eye');
   }
   button.addEventListener('click', _ev => {
     if (element.style.display == 'none') {
-      element.style.display = 'auto';
+      onStyleChangeUpdate('', 'display', '', element);
       button.classList.replace('fa-eye-slash', 'fa-eye');
     } else {
-      element.style.display = 'none';
+      onStyleChangeUpdate('none', 'display', '', element);
       button.classList.replace('fa-eye', 'fa-eye-slash');
     }
   });
@@ -547,7 +561,7 @@ function onCapitalizeCheck(input) {
 function onItalicChanged(button) {
   if (context.element) {
     if (context.element.style.fontStyle == 'italic') {
-      onStyleChangeUpdate('none', 'fontStyle', '');
+      onStyleChangeUpdate('normal', 'fontStyle', '');
       button.classList.remove('checked');
     } else {
       onStyleChangeUpdate('italic', 'fontStyle', '');
@@ -613,18 +627,21 @@ function onStyleChange(input, attribute, unit) {
   }
 }
 
-function onStyleChangeUpdate(value, attribute, unit) {
+function onStyleChangeUpdate(value, attribute, unit, element) {
   let newValue = value + unit;
   if (context.element) {
     let original = context.element.style[attribute];
     state.change({
       type: "Style",
-      element: context.element,
+      element: element ? element : context.element,
       attribute: attribute,
       from: original,
       to: newValue
     });
-    context.element.style[attribute] = newValue;
+    if (element) {
+      element.style[attribute] = newValue;
+    } else
+      context.element.style[attribute] = newValue;
   }
 }
 
