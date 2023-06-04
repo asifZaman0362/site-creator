@@ -35,9 +35,23 @@ let fgColorInspector = null;
 let borderRadiusInspector = null;
 let removeButton = null;
 let childrenInspector = null;
+let listInspector = null;
+
+let [desktopButton, mobileButton] = [null, null];
 
 let state = new VersionHistory();
 let timeout = null;
+
+function removeListItem(item, sibling, before, parentNode) {
+  state.change({
+    type: "Remove",
+    element: item,
+    sibling: sibling,
+    before: before,
+    parentNode: parentNode
+  });
+  item.remove();
+}
 
 function hoverItem(item) {
   if (timeout) {
@@ -107,6 +121,7 @@ function hideInspectorFields() {
   borderRadiusInspector?.classList.add('hidden');
   removeButton?.classList.add('hidden');
   childrenInspector?.classList.add('hidden');
+  listInspector?.classList.add('hidden');
 }
 
 function getChildrenNodesRecursive(element) {
@@ -194,7 +209,28 @@ function showChildren() {
   }
 }
 
+function showListItems() {
+  if (context.element) {
+    listInspector.querySelector('ul').innerHTML = '';
+    for (let i = 0; i < context.element.children.length; i++) {
+      let item = document.createElement('li');
+      let span = document.createElement('span');
+      span.innerHTML = context.element.children[i].innerHTML;
+      item.appendChild(span);
+      let icon = document.createElement('i');
+      icon.addEventListener('click', (_event) => {
+        removeItem(context.element.children[i]);
+        showListItems();
+      });
+      icon.classList.add('fa-solid', 'fa-minus');
+      item.appendChild(icon);
+      listInspector.querySelector('ul').appendChild(item);
+    }
+  }
+}
+
 function updateInspector() {
+  console.debug('update ', context);
   hideInspectorFields();
   if (context.element.classList.contains('module')) {
     borderRadiusInspector?.classList.remove('hidden');
@@ -213,6 +249,16 @@ function updateInspector() {
       sizeInspector?.classList.remove('hidden');
       if (context.element.children.length > 0)
         showChildren();
+      break;
+    }
+    case "UL":
+    case "OL": {
+      if (context.element.classList.contains('text-list')) {
+        listInspector?.classList.remove('hidden');
+        showListItems();
+      }
+      bgColorInspector?.classList.remove('hidden');
+      sizeInspector?.classList.remove('hidden');
       break;
     }
     case "IMG": {
@@ -259,6 +305,7 @@ function updateInspector() {
 
 // set the context for the editor to show appropriate options based on the element being edited
 function setEditorContext(item) {
+  console.debug('context', item);
   if (context.element) {
     context.element.contentEditable = false;
   }
@@ -395,27 +442,29 @@ function startDragMove(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
 }
 
-function removeItem() {
-  if (context.element) {
+function removeItem(item) {
+  if (!item) {
+    item = context.element;
+  }
+  if (item) {
     let sibling = null;
     let before = false;
-    let parentNode = context.element.parentNode;
-    if (context.element.nextSibling) {
-      sibling = context.element.nextSibling;
+    let parentNode = item.parentNode;
+    if (item.nextElementSibling) {
+      sibling = item.nextElementSibling;
       before = true;
-    } else if (context.element.previousSibling) {
-      sibling = context.element.previousSibling;
+    } else if (item.previousElementSibling) {
+      sibling = item.previousElementSibling;
     }
     state.change({
       type: "Remove",
-      element: context.element,
+      element: item,
       sibling: sibling,
       before: before,
       parentNode: parentNode
     });
-    context.element.remove();
-    context.element = null;
-    context.type = null;
+    item.remove();
+    item = null;
   }
 }
 
@@ -455,6 +504,9 @@ function setup() {
   borderRadiusInspector = document.querySelector("#border-radius-slider");
   removeButton = document.querySelector("#remove-button");
   childrenInspector = document.querySelector('#children-inspector');
+  desktopButton = document.querySelector('#desktop');
+  mobileButton = document.querySelector('#mobile');
+  listInspector = document.querySelector('#list-inspector');
   let sliders = document.querySelectorAll('input[type="range"]');
   sliders.forEach(item => {
     const min = item.min
@@ -515,6 +567,14 @@ function createSpacingBoxImage() {
     context.closePath();
     context.strokeStyle = "lightgray";
     context.stroke();
+  }
+}
+
+function onSelectScreenSize(size) {
+  if (size == 'desktop') {
+    projectRoot.classList.replace('mobile', 'desktop');
+  } else {
+    projectRoot.classList.replace('desktop', 'mobile');
   }
 }
 
@@ -834,10 +894,16 @@ function undoLast() {
   let change = state.undo();
   if (!change) return;
   updateThingFromHistory(change, true);
+  if (context.element) {
+    updateInspector();
+  }
 }
 
 function redoLast() {
   let change = state.redo();
   if (!change) return;
   updateThingFromHistory(change, false);
+  if (context.element) {
+    updateInspector();
+  }
 }

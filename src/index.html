@@ -50,7 +50,7 @@
               <menu class="module">
                 <h1 class="heading">Stylish Menu</h1>
                 <nav>
-                  <ul>
+                  <ul class="text-list">
                     <li>About</li>
                     <li>Home</li>
                     <li>Store</li>
@@ -226,7 +226,7 @@
       </li>
     </ul>
     <div id="playground">
-      <div id="project-root"></div>
+      <div id="project-root" class="desktop"></div>
     </div>
     <div id="properties-panel">
       <h2 class="element-name" id="context">Container</h3>
@@ -261,6 +261,12 @@
               <input type="number" name="bottom-margin" placeholder="auto" id="bottom-margin" onchange="onMarginChange(this, 'bottom')">
             </div>
           </div>
+        </div>
+        <div class="tabbed-selector">
+          <input type="radio" name="screen-size-selector" class="tabbed" id="desktop" value="Desktop" onchange="onSelectScreenSize('desktop')">
+          <label for="desktop">Desktop</label>
+          <input type="radio" name="screen-size-selector" class="tabbed" id="mobile" value="Mobile" onchange="onSelectScreenSize('mobile')">
+          <label for="mobile">Mobile</label>
         </div>
         <div class="inspector-section-wrapper-smaller" id="size-inspector">
           <h4 class="inspector-section-heading">Size</h3>
@@ -302,11 +308,78 @@
           </div>
         </div>
       </div>
+      <div class="inspector-section" id="border">
+        <div class="row">
+          <h4 class="inspector-section-heading">BORDER</h4>
+          <input type="checkbox" name="" id="border-checkbox" onchange="onBorderToggle(this)">
+        </div>
+        <div class="row">
+          <div class="input-wrapper">
+            <input type="number" name="" id="border-thickness" onchange="onBorderThicknessChange(this)">
+          </div>
+          <div class="input-wrapper">
+            <select name="" id="" onchange="onBorderStyleChange(this)">
+              <option value="Solid">Solid</option>
+              <option value="Dotted">Dotted</option>
+              <option value="Dashed">Dashed</option>
+            </select>
+            <div class="color-picker-input">
+              <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="border-color">
+              <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="inspector-section" id="background-color-inspector">
         <h4 class="inspector-section-heading">BACKGROUND COLOR</h3>
         <div class="color-picker-input">
           <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="bg-color">
           <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
+        </div>
+      </div>
+      <div class="inspector-section" id="background-image-inspector">
+        <div class="row">
+          <h4 class="inspector-section-heading">BACKGROUND IMAGE</h3>
+          <input type="checkbox" name="" id="background-image-checkbox" onchange="onBackgroundImageToggled(this)">
+        </div>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-link"></i>
+          <input type="url" name="" id="background-image-url" placeholder="https://" onchange="onBackgroundImageSrcChanged(this)">
+        </div>
+        <h4>SIZE AND POSITION</h4>
+        <div class="input-wrapper">
+          <select name="" id="object-fit">
+            <option value="Cover">Cover</option>
+            <option value="Contain">Contain</option>
+            <option value="Fill">Fill</option>
+            <option value="Tile">Tile</option>
+          </select>
+          <select name="" id="bg-position">
+            <option value="Top Left">Top Left</option>
+            <option value="Top">Top</option>
+            <option value="Top Right">Top Right</option>
+            <option value="Left">Left</option>
+            <option value="Center">Center</option>
+            <option value="Right">Right</option>
+            <option value="Bottom Left">Bottom Left</option>
+            <option value="Bottom">Bottom</option>
+            <option value="Bottom Right">Bottom Right</option>
+          </select>
+        </div>
+      </div>
+      <div class="inspector-section" id="list-inspector">
+        <h4 class="inspector-section-heading">ITEMS</h4>
+        <ul>
+        </ul>
+      </div>
+      <div class="inspector-section">
+        <div class="row">
+          <h4 class="inspector-section-heading">URL</h4>
+          <input type="checkbox" name="" id="url-checkbox" onchange="onUrlToggled()">
+        </div>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-link"></i>
+          <input type="text" name="" id="url-input-link" placeholder="https://" onchange="onUrlUpdated(this)">
         </div>
       </div>
       <div class="inspector-section" id="text-inspector">
@@ -388,6 +461,37 @@
         <h4 class="inspector-section-heading">ELEMENTS</h4>
         <ul>
         </ul>
+      </div>
+      <div class="inspector-section" id="text-shadow">
+        <h4 class="inspector-section-heading">SHADOW</h4>
+        <div class="box-shadow-container">
+          <div class="box-shadow-icon"></div>
+          <span class="label">Box Shadow</span>
+          <div class="row">
+            <div class="color-picker-input">
+              <input class="color-preview" type="color" colorfor="shadow-color" onchange="colorUpdate(this)" id="shadow-color">
+              <input class="color-hex-code" type="text" colorfor="shadow-color" value="#000000" onchange="colorHexUpdate(this)">
+            </div>
+            <input type="number" max="100" min="0" name="" id="shadow-color-opacity" value="10">
+          </div>
+          <div class="shadow-grid">
+            <label for="">X</label>
+            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="shadowOffsetChange(this)">
+            <span class="value"></span>
+            <label for="">y</label>
+            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="shadowOffsetChange(this)">
+            <span class="value"></span>
+            <label for="">Blur</label>
+            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="shadowOffsetChange(this)">
+            <span class="value"></span>
+          </div>
+        </div>
+      </div>
+      <div class="inspector-section">
+        <div class="row">
+          <h4>HIDE ELEMENT</h4>
+          <input type="checkbox" name="" id="hide-element-checkbox" onchange="onElementHiddenToggle(this)">
+        </div>
       </div>
       <div class="flex-row">
         <button class="remove-button" onclick="removeItem()" id="remove-button">Remove</button>
