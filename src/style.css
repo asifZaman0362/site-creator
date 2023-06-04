@@ -388,6 +388,7 @@ i {
     border: 1px solid lightgray;
     align-items: center;
     border-radius: 5px;
+    column-gap: 10px;
 }
 
 .color-picker-input input[type="text"] {
@@ -702,4 +703,24 @@ img {
     display: grid;
     grid-template-columns: 1fr 5fr 1fr;
     align-items: center;
+}
+
+.full {
+    flex: 1;
+}
+
+i {
+    align-self: center;
+}
+
+.input-wrapper {
+    column-gap: 10px;
+}
+
+.input-wrapper select {
+    flex: 1;
+}
+
+.input-wrapper i {
+    font-size: 16px;
 }

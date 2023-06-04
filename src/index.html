@@ -316,20 +316,21 @@
             <span class="slider round"></span>
           </label>
         </div>
-        <div class="row">
-          <div class="input-wrapper">
-            <input type="number" name="" id="border-thickness" onchange="onBorderThicknessChange(this)">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="input-container flex-grow">
+            <input type="number" class="nobg" name="" id="border-thickness" onchange="onBorderThicknessChange(this)">
+            <span class="pixel">px</span>
           </div>
-          <div class="input-wrapper">
-            <select name="" id="" onchange="onBorderStyleChange(this)">
-              <option value="Solid">Solid</option>
-              <option value="Dotted">Dotted</option>
-              <option value="Dashed">Dashed</option>
-            </select>
-            <div class="color-picker-input">
-              <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="border-color">
-              <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
-            </div>
+          <select name="" id="" class="flex-grow no-border" onchange="onBorderStyleChange(this)">
+            <option value="Solid">Solid</option>
+            <option value="Dotted">Dotted</option>
+            <option value="Dashed">Dashed</option>
+          </select>
+        </div>
+        <div class="input-wrapper full">
+          <div class="color-picker-input full">
+            <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="border-color">
+            <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
           </div>
         </div>
       </div>
@@ -350,7 +351,7 @@
         </div>
         <div class="input-wrapper">
           <i class="fa-solid fa-link"></i>
-          <input type="url" name="" id="background-image-url" placeholder="https://" onchange="onBackgroundImageSrcChanged(this)">
+          <input type="url" name="" class="full" id="background-image-url" placeholder="https://" onchange="onBackgroundImageSrcChanged(this)">
         </div>
         <h4>SIZE AND POSITION</h4>
         <div class="input-wrapper">
@@ -388,7 +389,7 @@
         </div>
         <div class="input-wrapper">
           <i class="fa-solid fa-link"></i>
-          <input type="text" name="" id="url-input-link" placeholder="https://" onchange="onUrlUpdated(this)">
+          <input type="text" name="" class="full" id="url-input-link" placeholder="https://" onchange="onUrlUpdated(this)">
         </div>
       </div>
       <div class="inspector-section" id="text-inspector">
@@ -463,7 +464,7 @@
       <div class="inspector-section" id="url-selector">
         <h4 class="inspector-section-heading">URL</h3>
         <div class="url-selector">
-          <input type="text" name="url" id="url-input" onchange="onUrlChanged(this)">
+          <input type="text" name="url" class="full" id="url-input" onchange="onUrlChanged(this)">
         </div>
       </div>
       <div class="inspector-section" id="children-inspector">
@@ -483,11 +484,14 @@
           <div class="box-shadow-icon"></div>
           <span class="label">Box Shadow</span>
           <div class="row">
-            <div class="color-picker-input">
+            <div class="input-container color-picker-input flex-grow no-border">
               <input class="color-preview" type="color" colorfor="shadow-color" onchange="colorUpdate(this)" id="shadow-color">
               <input class="color-hex-code" type="text" colorfor="shadow-color" value="#000000" onchange="colorHexUpdate(this)">
             </div>
-            <input type="number" max="100" min="0" name="" id="shadow-color-opacity" value="10">
+            <div class="input-container flex-grow">
+              <input type="number" class="nobg" max="100" min="0" name="" id="shadow-color-opacity" value="10">
+              <span class="pixel">%</span>
+            </div>
           </div>
           <div class="shadow-grid">
             <label for="">X</label>
