@@ -263,7 +263,7 @@
           </div>
         </div>
         <div class="tabbed-selector">
-          <input type="radio" name="screen-size-selector" class="tabbed" id="desktop" value="Desktop" onchange="onSelectScreenSize('desktop')">
+          <input type="radio" name="screen-size-selector" checked class="tabbed" id="desktop" value="Desktop" onchange="onSelectScreenSize('desktop')">
           <label for="desktop">Desktop</label>
           <input type="radio" name="screen-size-selector" class="tabbed" id="mobile" value="Mobile" onchange="onSelectScreenSize('mobile')">
           <label for="mobile">Mobile</label>
@@ -287,7 +287,7 @@
       <div class="inspector-section" id="border-radius-slider">
         <h4 class="inspector-section-heading">Border Radius</h3>
         <div class="slider-input">
-          <input type="range" name="border-radius" min="0" max="100" onchange="onStyleChange(this, 'borderRadius', 'px')">
+          <input type="range" id="border-radius-input" name="border-radius" min="0" max="100" onchange="onStyleChange(this, 'borderRadius', 'px')">
           <div class="row" id="border-radius-editor">
             <div class="input-container">
               <i class="fa-solid fa-border-top-left"></i>
@@ -312,25 +312,25 @@
         <div class="row no-border">
           <h4 class="inspector-section-heading">BORDER</h4>
           <label class="switch">
-            <input type="checkbox" name="" id="border-checkbox" onchange="onBorderToggle(this)">
+            <input type="checkbox" name="" id="border-checkbox" onchange="onStyleToggled('border');">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="row" style="margin-bottom: 10px">
           <div class="input-container flex-grow">
-            <input type="number" class="nobg" name="" id="border-thickness" onchange="onBorderThicknessChange(this)">
+            <input type="number" class="nobg" name="" id="border-thickness" onchange="onStyleChange(this, 'borderWidth', 'px')">
             <span class="pixel">px</span>
           </div>
-          <select name="" id="" class="flex-grow no-border" onchange="onBorderStyleChange(this)">
-            <option value="Solid">Solid</option>
-            <option value="Dotted">Dotted</option>
-            <option value="Dashed">Dashed</option>
+          <select name="" id="border-style" class="flex-grow no-border" onchange="onStyleChange(this, 'borderStyle', '')">
+            <option value="solid">Solid</option>
+            <option value="dotted">Dotted</option>
+            <option value="dashed">Dashed</option>
           </select>
         </div>
         <div class="input-wrapper full">
           <div class="color-picker-input full">
-            <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="border-color">
-            <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
+            <input class="color-preview" type="color" colorfor="border" onchange="colorUpdate(this)" id="border-color">
+            <input class="color-hex-code" type="text" colorfor="border" value="#000000" onchange="colorHexUpdate(this)" id="border-color-hex">
           </div>
         </div>
       </div>
@@ -338,14 +338,14 @@
         <h4 class="inspector-section-heading">BACKGROUND COLOR</h3>
         <div class="color-picker-input">
           <input class="color-preview" type="color" colorfor="bg" onchange="colorUpdate(this)" id="bg-color">
-          <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)">
+          <input class="color-hex-code" type="text" colorfor="bg" value="#000000" onchange="colorHexUpdate(this)" id="bg-color-hex">
         </div>
       </div>
       <div class="inspector-section" id="background-image-inspector">
         <div class="row no-border">
           <h4 class="inspector-section-heading">BACKGROUND IMAGE</h3>
           <label class="switch">
-            <input type="checkbox" name="" id="background-image-checkbox" onchange="onBackgroundImageToggled(this)">
+            <input type="checkbox" name="" id="background-image-checkbox" onchange="onStyleToggled('background-image');">
             <span class="slider round"></span>
           </label>
         </div>
@@ -356,21 +356,21 @@
         <h4>SIZE AND POSITION</h4>
         <div class="input-wrapper">
           <select name="" id="object-fit">
-            <option value="Cover">Cover</option>
-            <option value="Contain">Contain</option>
-            <option value="Fill">Fill</option>
-            <option value="Tile">Tile</option>
+            <option value="cover">Cover</option>
+            <option value="contain">Contain</option>
+            <option value="fill">Fill</option>
+            <option value="tile">Tile</option>
           </select>
           <select name="" id="bg-position">
-            <option value="Top Left">Top Left</option>
-            <option value="Top">Top</option>
-            <option value="Top Right">Top Right</option>
-            <option value="Left">Left</option>
-            <option value="Center">Center</option>
-            <option value="Right">Right</option>
-            <option value="Bottom Left">Bottom Left</option>
-            <option value="Bottom">Bottom</option>
-            <option value="Bottom Right">Bottom Right</option>
+            <option value="top left">Top Left</option>
+            <option value="top">Top</option>
+            <option value="top right">Top Right</option>
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+            <option value="bottom left">Bottom Left</option>
+            <option value="bottom">Bottom</option>
+            <option value="bottom right">Bottom Right</option>
           </select>
         </div>
       </div>
@@ -461,10 +461,11 @@
           </div>
         </div>
       </div>
-      <div class="inspector-section" id="url-selector">
-        <h4 class="inspector-section-heading">URL</h3>
-        <div class="url-selector">
-          <input type="text" name="url" class="full" id="url-input" onchange="onUrlChanged(this)">
+      <div class="inspector-section" id="src-inspector">
+        <h4 class="inspector-section-heading">SRC</h3>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-link"></i>
+          <input type="text" name="" class="full" id="src-input-link" placeholder="https://" onchange="onUrlChanged(this)">
         </div>
       </div>
       <div class="inspector-section" id="children-inspector">
@@ -476,7 +477,7 @@
         <div class="row no-border">
           <h4>SHADOW</h4>
           <label class="switch">
-            <input type="checkbox" name="" id="shadow-checkbox" onchange="onShadowToggle(this)">
+            <input type="checkbox" name="" id="shadow-checkbox" onchange="onStyleToggled('shadow')">
             <span class="slider round"></span>
           </label>
         </div>
@@ -485,34 +486,25 @@
           <span class="label">Box Shadow</span>
           <div class="row">
             <div class="input-container color-picker-input flex-grow no-border">
-              <input class="color-preview" type="color" colorfor="shadow-color" onchange="colorUpdate(this)" id="shadow-color">
-              <input class="color-hex-code" type="text" colorfor="shadow-color" value="#000000" onchange="colorHexUpdate(this)">
+              <input class="color-preview" type="color" colorfor="shadowColor" onchange="colorUpdate(this)" id="shadow-color">
+              <input class="color-hex-code" type="text" colorfor="shadowColor" value="#000000" id="shadow-color-hex" onchange="colorHexUpdate(this)">
             </div>
             <div class="input-container flex-grow">
-              <input type="number" class="nobg" max="100" min="0" name="" id="shadow-color-opacity" value="10">
+              <input type="number" class="nobg" max="100" min="0" name="" id="shadow-color-opacity" value="10" onchange="onShadowUpdate()">
               <span class="pixel">%</span>
             </div>
           </div>
           <div class="shadow-grid">
-            <label for="">X</label>
-            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="shadowOffsetChange(this)">
+            <label for="x-offset">X</label>
+            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="onShadowUpdate(this)">
             <span class="value"></span>
-            <label for="">y</label>
-            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="shadowOffsetChange(this)">
+            <label for="y-offset">y</label>
+            <input type="range" name="" id="y-offset" min="-10" max="10" onchange="onShadowUpdate(this)">
             <span class="value"></span>
-            <label for="">Blur</label>
-            <input type="range" name="" id="x-offset" min="-10" max="10" onchange="shadowOffsetChange(this)">
+            <label for="blur">Blur</label>
+            <input type="range" name="" id="blur" min="-10" max="10" onchange="onShadowUpdate(this)">
             <span class="value"></span>
           </div>
-        </div>
-      </div>
-      <div class="inspector-section">
-        <div class="row no-border">
-          <h4>HIDE ELEMENT</h4>
-          <label class="switch">
-            <input type="checkbox" name="" id="hide-element-checkbox" onchange="onElementHiddenToggle(this)">
-            <span class="slider round"></span>
-          </label>
         </div>
       </div>
       <div class="flex-row">

@@ -699,6 +699,23 @@ img {
     object-fit: cover;
 }
 
+.border-off {
+    border: none !important;
+}
+
+.shadow-off {
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+.background-image-off {
+    background-image: none !important;
+}
+
+.background-color-off {
+    background-color: none !important;
+}
+
 .shadow-grid {
     display: grid;
     grid-template-columns: 1fr 5fr 1fr;

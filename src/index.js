@@ -27,6 +27,7 @@ let contextHint = null;
 let fontInspector = null;
 let imageInspector = null;
 let urlInspector = null;
+let srcInspector = null;
 let textInspector = null;
 let sizeInspector = null;
 let shadowInspector = null;
@@ -229,12 +230,128 @@ function showListItems() {
   }
 }
 
+function updateBorderRadiusInput() {
+  borderRadiusInspector?.classList.remove('hidden');
+  sel('#border-radius-input').value = context.element.style.borderRadius.match(/[0-9]+/);
+  sel('#top-left-radius').value = getComputedStyle(context.element).borderTopLeftRadius ? parseInt(getComputedStyle(context.element).borderTopLeftRadius) : 0;
+  sel('#top-right-radius').value = getComputedStyle(context.element).borderTopRightRadius ? parseInt(getComputedStyle(context.element).borderTopRightRadius) : 0;
+  sel('#bottom-right-radius').value = getComputedStyle(context.element).borderBottomRightRadius ? parseInt(getComputedStyle(context.element).borderBottomRightRadius) : 0;
+  sel('#bottom-left-radius').value = getComputedStyle(context.element).borderBottomLeftRadius ? parseInt(getComputedStyle(context.element).borderBottomLeftRadius) : 0;
+}
+
+function updateBorderInspector() {
+  sel('#border-checkbox').checked = !context.element.classList.contains('border-off');
+  let styles = getComputedStyle(context.element);
+  let width = parseInt(styles.borderWidth);
+  let style = styles.borderStyle == 'none' ? 'solid' : styles.borderStyle;
+  let color = getComputedStyle(context.element).borderColor;
+  sel('#border-thickness').value = parseInt(width);
+  sel('#border-style').value = style;
+  sel('#border-color').value = rgbStringToHex(color);
+  sel('#border-color-hex').value = rgbStringToHex(color);
+}
+
+function updateBackgroundColorInput() {
+  bgColorInspector?.classList.remove('hidden');
+  sel('#bg-color').value = rgbStringToHex(getComputedStyle(context.element).backgroundColor);
+  sel('#bg-color-hex').value = rgbStringToHex(getComputedStyle(context.element).backgroundColor);
+}
+
+function updateColorInput() {
+  sel('#fg-color').value = rgbStringToHex(getComputedStyle(context.element).backgroundColor);
+  sel('#fg-color-hex').value = rgbStringToHex(getComputedStyle(context.element).backgroundColor);
+}
+
+function updateBackgroundImageInput() {
+  sel('#background-image-checkbox').checked = !context.element.classList.contains('background-image-off');
+  let matches = context.element.style.backgroundImage.match(/url\("(.*)"\)/);
+  try {
+    sel('#background-image-url').value = matches.length == 2 ? matches[1] : '';
+  } catch (e) {
+    sel('#background-image-url').value = '';
+  }
+  if (context.element.style.objectFit) {
+    sel('#object-fit').value = context.element.style.objectFit;
+  } else if (context.element.style.backgroundRepeat == 'repeat') {
+    sel('#object-fit').value = 'tile';
+  }
+  sel('#bg-position').value = context.element.style.backgroundPosition;
+}
+
+function updateSizeInspector() {
+  sizeInspector?.classList.remove('hidden');
+  sel('#width-input').value = context.element.style.width;
+  sel('#height-input').value = context.element.style.height;
+}
+
+function updateTextInspector() {
+
+}
+
+function updateSrcInspector() {
+  srcInspector.classList.remove('hidden');
+  srcInspector.querySelector('input').value = context.element.src;
+}
+
+function updateUrlInspector() {
+  urlInspector?.classList.remove('hidden');
+  urlInspector.querySelector('input').value = context.element.src;
+}
+
+function updateShadowInspector(text) {
+  sel('#text-shadow').classList.remove('hidden');
+  sel('#shadow-checkbox').checked = !context.element.classList.contains('shadow-off');
+  let shadow = text ? getComputedStyle(context.element).textShadow : getComputedStyle(context.element).boxShadow;
+  console.log(shadow);
+  if (shadow.startsWith('#')) {
+    try {
+      let color = shadow.match(/#[a-zA-Z0-9]+/)[0];
+      sel('#shadow-color').value = rgbStringToHex(color);
+      sel('#shadow-color-hex').value = rgbStringToHex(color);
+    } catch (e) {
+      sel('#shadow-color').value = '#00';
+      sel('#shadow-color-hex').value = '#000000';
+    }
+  } else if (shadow.startsWith('rgb')) {
+    try {
+      let cols = shadow.match(/rgba\(.+\)/)[0].match(/[0-9\.]+/g);
+      console.log(cols);
+      let alpha = cols.length == 4 ? cols[3] : 1;
+      let color = rgbStringToHex(shadow.match(/rgba?\(.+\)/)[0]);
+      sel('#shadow-color-opacity').value = alpha * 100;
+      sel('#shadow-color').value = color;
+      sel('#shadow-color-hex').value = color;
+    } catch (e) {
+      sel('#shadow-color-opacity').value = 0;
+      sel('#shadow-color').value = '#000000';
+      sel('#shadow-color-hex').value = '#000000';
+    }
+  } else {
+    sel('#shadow-color-opacity').value = 0;
+    sel('#shadow-color').value = '#000000';
+    sel('#shadow-color-hex').value = '#000000';
+  }
+  try {
+    let matches = shadow.match(/\b\d+px\b/g);
+    sel('#x-offset').value = parseInt(matches[0]);
+    sel('#y-offset').value = parseInt(matches[1]);
+    sel('#blur').value = parseInt(matches[3]);
+  } catch (err) {
+    sel('#x-offset').value = 0;
+    sel('#y-offset').value = 0;
+    sel('#blur').value = 0;
+  }
+}
+
 function updateInspector() {
   console.debug('update ', context);
   hideInspectorFields();
   if (context.element.classList.contains('module')) {
-    borderRadiusInspector?.classList.remove('hidden');
-    bgColorInspector?.classList.remove('hidden');
+    updateBorderRadiusInput();
+    updateBorderInspector();
+    updateBackgroundColorInput();
+    updateBackgroundImageInput();
+    updateShadowInspector();
     removeButton?.classList.remove('hidden');
     showChildren();
     return;
@@ -244,9 +361,11 @@ function updateInspector() {
     case "SECTION":
     case "ARTICLE":
     case "MENU": {
-      borderRadiusInspector?.classList.remove('hidden');
-      bgColorInspector?.classList.remove('hidden');
-      sizeInspector?.classList.remove('hidden');
+      updateBackgroundImageInput();
+      updateBorderRadiusInput();
+      updateBorderInspector();
+      updateSizeInspector();
+      updateShadowInspector();
       if (context.element.children.length > 0)
         showChildren();
       break;
@@ -257,14 +376,18 @@ function updateInspector() {
         listInspector?.classList.remove('hidden');
         showListItems();
       }
-      bgColorInspector?.classList.remove('hidden');
-      sizeInspector?.classList.remove('hidden');
+      updateBackgroundColorInput();
+      updateBorderInspector();
+      updateBackgroundImageInput();
+      updateSizeInspector();
+      updateShadowInspector();
       break;
     }
     case "IMG": {
-      sizeInspector?.classList.remove('hidden');
-      urlInspector?.classList.remove('hidden');
-      urlInspector.querySelector('input').value = context.element.src;
+      updateSizeInspector();
+      updateBorderInspector();
+      updateSrcInspector();
+      updateShadowInspector();
       break;
     }
     case "H1":
@@ -276,28 +399,38 @@ function updateInspector() {
     case "P":
     case "SPAN":
     case "LI": {
-      sizeInspector?.classList.remove('hidden');
+      updateBorderInspector();
+      updateSizeInspector();
+      updateShadowInspector(true);
       textInspector?.classList.remove('hidden');
       if (context.element.children.length == 0) {
         context.element.contentEditable = true;
         context.element.focus();
+
       } else {
         childrenInspector?.classList.remove('hidden');
+        showChildren();
       }
       break;
     }
     case "A": {
+      updateBorderInspector();
+      updateShadowInspector(true);
       textInspector?.classList.remove('hidden');
       context.element.contentEditable = true;
-      urlInspector?.classList.remove('hidden');
-      urlInspector.querySelector('input').value = context.element.src;
+      updateUrlInspector();
       break;
     }
     default: {
-      bgColorInspector?.classList.remove('hidden');
-      sizeInspector?.classList.remove('hidden');
-      if (context.element.children.length > 0)
+      updateBorderInspector();
+      updateBackgroundColorInput();
+      updateBackgroundImageInput();
+      updateSizeInspector();
+      updateShadowInspector();
+      if (context.element.children.length > 0) {
+        childrenInspector?.classList.remove('hidden');
         showChildren();
+      }
       break;
     }
   }
@@ -496,6 +629,7 @@ function setup() {
   contextHint = document.querySelector("#context");
   highlight = document.querySelector("#highlight");
   urlInspector = document.querySelector("#url-selector");
+  srcInspector = document.querySelector("#src-inspector");
   textInspector = document.querySelector("#text-inspector");
   sizeInspector = document.querySelector("#size-inspector");
   shadowInspector = document.querySelector("#shadow-inspector");
@@ -529,29 +663,64 @@ function setup() {
 
 window.addEventListener("load", setup);
 
-function colorChanged(color, fg) {
+function onUpdateShadow(color, x, y, blur) {
+  if (textInspector.classList.contains('hidden') && context.element) {
+    onStyleChangeUpdate(`${color} ${x} ${y} ${blur}`, 'box-shadow', 'px');
+  } else if (context.element) {
+    onStyleChangeUpdate(`${color} ${x} ${y} ${blur}`, 'text-shadow', 'px');
+  }
+}
+
+function sel(query) {
+  return document.querySelector(query);
+}
+
+function onShadowUpdate() {
+  let color = hexToRgb(sel('#shadow-color-hex').value, sel('#shadow-color-opacity').value);
+  console.log(color);
+  let x = sel('#x-offset').value;
+  let y = sel('#y-offset').value;
+  let blur = sel('#blur').value;
+  if (textInspector.classList.contains('hidden') && context.element) {
+    onStyleChangeUpdate(`${color} ${x}px ${y}px ${blur}px`, 'boxShadow', '');
+  } else if (context.element) {
+    onStyleChangeUpdate(`${color} ${x}px ${y}px ${blur}px`, 'textShadow', '');
+  }
+}
+
+function colorChanged(color, forWhat) {
   if (context.element) {
-    if (fg)
-      //context.element.style.color = color;
-      onStyleChangeUpdate(color, 'color', '');
-    else
-      //context.element.style.backgroundColor = color;
-      onStyleChangeUpdate(color, 'backgroundColor', '');
+    switch (forWhat) {
+      case 'fg':
+        //context.element.style.color = color;
+        onStyleChangeUpdate(color, 'color', '');
+        break;
+      case 'bg':
+        //context.element.style.backgroundColor = color;
+        onStyleChangeUpdate(color, 'backgroundColor', '');
+        break;
+      case 'border':
+        onStyleChangeUpdate(color, 'borderColor', '');
+        break;
+      case 'shadowColor':
+        onShadowUpdate();
+        break;
+    }
   }
 }
 
 function colorHexUpdate(element) {
   let colorInput = element.previousElementSibling;
   colorInput.value = element.value;
-  let fg = element.attributes["colorfor"].value == "fg";
-  colorChanged(colorInput.value, fg);
+  let forWhat = element.attributes["colorfor"].value;
+  colorChanged(colorInput.value, forWhat);
 }
 
 function colorUpdate(element) {
   let colorHexInput = element.nextElementSibling;
   colorHexInput.value = element.value;
-  let fg = element.attributes["colorfor"].value == "fg";
-  colorChanged(colorHexInput.value, fg);
+  let forWhat = element.attributes["colorfor"].value;
+  colorChanged(colorHexInput.value, forWhat);
 }
 
 function createSpacingBoxImage() {
@@ -705,6 +874,55 @@ function onStyleChangeUpdate(value, attribute, unit, element) {
   }
 }
 
+function onStyleToggled(propName) {
+  if (context.element) {
+    if (context.element.classList.contains(`${propName}-off`)) {
+      onStyleEnabled(propName);
+    } else {
+      onStyleDisabled(propName);
+    }
+  }
+}
+
+function onStyleEnabled(property) {
+  if (context.element) {
+    let className = `${property}-off`;
+    state.change({
+      type: "RemoveClass",
+      element: context.element,
+      className: className
+    });
+    context.element.classList.remove(className);
+  }
+}
+
+function onStyleDisabled(property) {
+  if (context.element) {
+    let className = `${property}-off`;
+    state.change({
+      type: "AddClass",
+      element: context.element,
+      className: className
+    });
+    context.element.classList.add(className);
+  }
+}
+
+function onBackgroundImageSrcChanged(input) {
+  let url = `url('${input.value}')`;
+  if (context.element) {
+    state.change({
+      type: "Style",
+      element: context.element,
+      attribute: "backgroundImage",
+      from: getComputedStyle(context.element).backgroundImage,
+      to: url
+    });
+    context.element.style.backgroundImage = url;
+    console.log(url);
+  }
+}
+
 function onAttributeChange(attributeName, value) {
   if (context.element) {
     let original = context.element.getAttribute(attributeName);
@@ -745,9 +963,22 @@ function onElementReorder(element, adjacent, below) {
 }
 
 function rgbStringToHex(rgb) {
+  if (rgb.startsWith('#')) return rgb;
   const matches = rgb.match(/(\d+)/g);
   const hex = rgbToHex(matches[0], matches[1], matches[2]);
   return hex;
+}
+
+function hexToRgb(hex, a) {
+  if (hex.startsWith('rgb')) return hex;
+  let pattern = /[a-zA-Z0-9][a-zA-Z0-9]/g;
+  let match = hex.matchAll(pattern);
+  let r = parseInt(match.next().value, 16);
+  let g = parseInt(match.next().value, 16);
+  let b = parseInt(match.next().value, 16);
+  a = a / 100;
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+
 }
 
 function rgbToHex(r, g, b) {
@@ -881,6 +1112,22 @@ function updateThingFromHistory(change, undo) {
     }
     case "Attribute": {
       change.element.setAttribute(change.attributeName, undo ? change.from : change.to);
+      break;
+    }
+    case "RemoveClass": {
+      if (undo) {
+        change.element.classList.add(change.className);
+      } else {
+        change.element.classList.remove(change.className);
+      }
+      break;
+    }
+    case "AddClass": {
+      if (!undo) {
+        change.element.classList.add(change.className);
+      } else {
+        change.element.classList.remove(change.className);
+      }
       break;
     }
     default: {
