@@ -1439,3 +1439,7 @@ function redoLast() {
     updateInspector();
   }
 }
+
+function exportPage() {
+  exportHtml(sel('#playground'), urls);
+}

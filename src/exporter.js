@@ -1,6 +1,7 @@
 function exportHtml(workspace, urls) {
   const copiedContent = document.createElement('div');
-  copiedContent.innerHTML = workspace.innerHTML;
+  copiedContent.innerHTML = workspace.outerHTML;
+  copiedContent.querySelector('#placeholder').remove();
   urls.forEach(url => {
     if (url.enabled && url.value) {
       let element = copiedContent.querySelector(`[data-url-id="${url.element.dataset.urlId}"`);
