@@ -37,6 +37,9 @@ let borderRadiusInspector = null;
 let removeButton = null;
 let childrenInspector = null;
 let listInspector = null;
+let alignInspector = null;
+let bgImageInspector = null;
+let borderInspector = null;
 
 let [desktopButton, mobileButton] = [null, null];
 
@@ -123,6 +126,10 @@ function hideInspectorFields() {
   removeButton?.classList.add('hidden');
   childrenInspector?.classList.add('hidden');
   listInspector?.classList.add('hidden');
+  srcInspector?.classList.add('hidden');
+  alignInspector?.classList.add('hidden');
+  bgImageInspector?.classList.add('hidden');
+  border?.classList.add('hidden');
 }
 
 function getChildrenNodesRecursive(element) {
@@ -230,6 +237,29 @@ function showListItems() {
   }
 }
 
+function updateAlignInspector() {
+  alignInspector?.classList.remove('hidden');
+  let align = getComputedStyle(context.element).textAlign;
+  let left = sel('#left-align-block');
+  let centre = sel('#centre-align-block');
+  let right = sel('#right-align-block');
+  left.checked = false;
+  centre.checked = false;
+  right.checked = false;
+  switch (align) {
+    case 'left':
+      left.checked = true;
+      break;
+    case 'center':
+    case 'justify':
+      centre.checked = true;
+      break;
+    case 'right':
+      right.checked = true;
+      break;
+  }
+}
+
 function updateBorderRadiusInput() {
   borderRadiusInspector?.classList.remove('hidden');
   sel('#border-radius-input').value = context.element.style.borderRadius.match(/[0-9]+/);
@@ -240,6 +270,7 @@ function updateBorderRadiusInput() {
 }
 
 function updateBorderInspector() {
+  borderInspector.classList.remove('checked');
   sel('#border-checkbox').checked = !context.element.classList.contains('border-off');
   let styles = getComputedStyle(context.element);
   let width = parseInt(styles.borderWidth);
@@ -263,6 +294,7 @@ function updateColorInput() {
 }
 
 function updateBackgroundImageInput() {
+  bgImageInspector.classList.remove('hidden');
   sel('#background-image-checkbox').checked = !context.element.classList.contains('background-image-off');
   let matches = context.element.style.backgroundImage.match(/url\("(.*)"\)/);
   try {
@@ -285,7 +317,63 @@ function updateSizeInspector() {
 }
 
 function updateTextInspector() {
-
+  textInspector?.classList.remove('hidden');
+  let style = getComputedStyle(context.element);
+  let left = sel('#left-align');
+  let centre = sel('#centre-align');
+  let justify = sel('#justify-text');
+  let right = sel('#right-align');
+  left.checked = false;
+  centre.checked = false;
+  justify.checked = false;
+  right.checked = false;
+  let align = style.textAlign;
+  const computedDirection = window.getComputedStyle(context.element.parentElement || document.body).direction;
+  if (computedDirection == 'ltr') {
+    if (align == 'start') {
+      align = 'left';
+    } else if (align == 'end') {
+      align = 'right';
+    }
+  } else {
+    if (align == 'start') {
+      align = 'right';
+    } else if (align == 'end') {
+      align = 'left';
+    }
+  }
+  console.log("align", align);
+  switch (align) {
+    case 'left':
+      left.checked = true;
+      break;
+    case 'center':
+      centre.checked = true;
+      break;
+    case 'justify':
+      justify.checked = true;
+      break;
+    case 'right':
+      right.checked = true;
+      break;
+  }
+  let strike = sel('#strikethrough-checkbox');
+  let uline = sel('#underline-checkbox');
+  let capitalize = sel('#capitalize-checkbox');
+  strike.classList.remove('checked');
+  uline.classList.remove('checked');
+  capitalize.classList.remove('checked');
+  if (style.textDecoration == 'underline') {
+    uline.classList.add('checked');
+  } else if (style.textDecoration == 'line-through') {
+    strike.classList.add('checked');
+  }
+  if (style.textTransform == 'capitalize') {
+    capitalize.classList.add('checked');
+  }
+  updateFontInspector(style.fontFamily.split(' ')[0], style.fontSize, style.fontWeight, style.fontStyle);
+  sel('#text-height-input').value = parseInt(style.lineHeight);
+  sel('#text-width-input').value = parseInt(style.letterSpacing);
 }
 
 function updateSrcInspector() {
@@ -366,6 +454,7 @@ function updateInspector() {
       updateBorderInspector();
       updateSizeInspector();
       updateShadowInspector();
+      updateAlignInspector();
       if (context.element.children.length > 0)
         showChildren();
       break;
@@ -376,6 +465,7 @@ function updateInspector() {
         listInspector?.classList.remove('hidden');
         showListItems();
       }
+      updateAlignInspector();
       updateBackgroundColorInput();
       updateBorderInspector();
       updateBackgroundImageInput();
@@ -388,6 +478,7 @@ function updateInspector() {
       updateBorderInspector();
       updateSrcInspector();
       updateShadowInspector();
+      updateAlignInspector();
       break;
     }
     case "H1":
@@ -402,7 +493,7 @@ function updateInspector() {
       updateBorderInspector();
       updateSizeInspector();
       updateShadowInspector(true);
-      textInspector?.classList.remove('hidden');
+      updateTextInspector();
       if (context.element.children.length == 0) {
         context.element.contentEditable = true;
         context.element.focus();
@@ -416,7 +507,7 @@ function updateInspector() {
     case "A": {
       updateBorderInspector();
       updateShadowInspector(true);
-      textInspector?.classList.remove('hidden');
+      updateTextInspector();
       context.element.contentEditable = true;
       updateUrlInspector();
       break;
@@ -641,6 +732,9 @@ function setup() {
   desktopButton = document.querySelector('#desktop');
   mobileButton = document.querySelector('#mobile');
   listInspector = document.querySelector('#list-inspector');
+  alignInspector = document.querySelector('#alignment-inspector');
+  bgImageInspector = document.querySelector('#background-image-inspector');
+  borderInspector = document.querySelector('#border');
   let sliders = document.querySelectorAll('input[type="range"]');
   sliders.forEach(item => {
     const min = item.min
@@ -920,6 +1014,30 @@ function onBackgroundImageSrcChanged(input) {
     });
     context.element.style.backgroundImage = url;
     console.log(url);
+  }
+}
+
+function onBackgroundSizeChanged(input) {
+  let value = input.value;
+  if (context.element == null) return;
+  if (value == 'tile') {
+    state.change({
+      type: 'Style',
+      element: context.element,
+      attribute: 'backgroundRepeat',
+      from: context.element.style.backgroundRepeat,
+      to: 'repeat'
+    });
+    context.element.style.backgroundRepeat = 'repeat';
+  } else {
+    state.change({
+      type: 'Style',
+      element: context.element,
+      attribute: 'objectFit',
+      from: context.element.style.objectFit,
+      to: value
+    });
+    context.element.style.objectFit = value;
   }
 }
 

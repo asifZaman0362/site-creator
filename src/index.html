@@ -355,22 +355,22 @@
         </div>
         <h4>SIZE AND POSITION</h4>
         <div class="input-wrapper">
-          <select name="" id="object-fit">
+          <select name="" id="object-fit" onchange="onBackgroundSizeChanged(this)">
             <option value="cover">Cover</option>
             <option value="contain">Contain</option>
             <option value="fill">Fill</option>
             <option value="tile">Tile</option>
           </select>
-          <select name="" id="bg-position">
-            <option value="top left">Top Left</option>
-            <option value="top">Top</option>
-            <option value="top right">Top Right</option>
-            <option value="left">Left</option>
-            <option value="center">Center</option>
-            <option value="right">Right</option>
-            <option value="bottom left">Bottom Left</option>
-            <option value="bottom">Bottom</option>
-            <option value="bottom right">Bottom Right</option>
+          <select name="" id="bg-position" onchange="onStyleChange(this, 'backgroundPosition', '')">
+            <option value="left top">Top Left</option>
+            <option value="center top">Top</option>
+            <option value="right top">Top Right</option>
+            <option value="left center">Left</option>
+            <option value="center center">Center</option>
+            <option value="right center">Right</option>
+            <option value="left bottom">Bottom Left</option>
+            <option value="center bottom">Bottom</option>
+            <option value="right bottom">Bottom Right</option>
           </select>
         </div>
       </div>
@@ -406,7 +406,7 @@
               <i class="fa-solid fa-italic"></i>
             </button>
             <div class="input-container flex-grow">
-              <input type="number" class="nobg" placeholder="auto" onchange="onStyleChange(this, 'font-size', 'px')">
+              <input type="number" class="nobg" placeholder="auto" id="font-size" onchange="onStyleChange(this, 'font-size', 'px')">
               <span class="pixel">px</span>
             </div>
           </div>
@@ -459,6 +459,23 @@
               </label>
             </button>
           </div>
+        </div>
+      </div>
+      <div class="inspector-section" id="alignment-inspector">
+        <h4 class="inspector-section-heading">ALIGNMENT</h4>
+        <div class="row">
+          <input type="radio" name="block-alignment" id="left-align-block" value="left" onchange="onSelectAlignment(this)">
+          <label for="left-align">
+            <i class="fa-solid fa-align-left"></i>
+          </label>
+          <input type="radio" name="block-alignment" id="centre-align-block" value="center" onchange="onSelectAlignment(this)">
+          <label for="centre-align">
+            <i class="fa-solid fa-align-center"></i>
+          </label>
+          <input type="radio" name="alignment" id="right-align-block" value="right" onchange="onSelectAlignment(this)">
+          <label for="right-align">
+            <i class="fa-solid fa-align-right"></i>
+          </label>
         </div>
       </div>
       <div class="inspector-section" id="src-inspector">

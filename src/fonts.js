@@ -49,7 +49,7 @@ function addFont(font) {
 function setup() {
   list = document.querySelector("#font-selector");
   weightList = document.querySelector("#weight-selector");
-  italicButton = document.querySelector("#italic");
+  italicButton = document.querySelector("#italic-button");
   lsFonts((fonts) =>
     fonts.forEach(font => {
       allFonts.push(font);
@@ -59,6 +59,34 @@ function setup() {
       list.add(option, null);
     })
   );
+}
+
+function updateFontInspector(family, size, weight, style) {
+  family = family.match(/[a-zA-Z0-9]+/)[0];
+  let pos = allFonts.findIndex(f => f.family == family);
+  console.log(pos);
+  if (pos >= 0) {
+    list.selectedIndex = pos + 1;
+    let x = 0, index = 0;
+    while (weightList.options.length > 0)
+      weightList.options.remove(0);
+    getVariantInfo(family).weights.forEach(item => {
+      if (item == weight) index = x;
+      let weightOption = document.createElement('option');
+      weightOption.value = item;
+      weightOption.innerHTML = item;
+      weightList.add(weightOption);
+      x++;
+    });
+    weightList.selectedIndex = index;
+  } else {
+    list.selectedIndex = 0;
+  }
+  if (style == 'italic')
+    italicButton.classList.add('checked');
+  else
+    italicButton.classList.remove('checked');
+  sel('#font-size').value = parseInt(size);
 }
 
 function getVariantInfo(fontFamily) {
@@ -120,9 +148,9 @@ function onSelectWeight(_event) {
 
 function updateItalicButtonState(value) {
   if (value)
-    italicButton.classList.replace('unchecked', 'checked');
+    italicButton.classList.add('checked');
   else
-    italicButton.classList.replace('checked', 'unchecked');
+    italicButton.classList.remove('checked');
 }
 
 function toggleItalic() {
