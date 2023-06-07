@@ -75,15 +75,35 @@ body {
 #playground {
     background: lightgray;
     overflow-y: scroll;
-    height: 100%;
     flex: 1 1 1px;
     display: flex;
     justify-content: center;
     align-items: stretch;
+    padding: 20px;
 }
 
 #project-root {
-    background: #ebebeb;
+    background: none;
+}
+
+#placeholder {
+    pointer-events: none;
+    max-width: 400px;
+    height: 400px;
+    background: #eaeaea;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    border-radius: 25px;
+    color: gray !important;
+    padding: 50px;
+}
+
+#placeholder i {
+    font-size: 28px;
 }
 
 #project-root.desktop {
@@ -479,8 +499,9 @@ input[type="radio"]:checked + label i {
 
 input[type="radio"].tabbed:checked + label {
     background: white;
-    color: blue;
+    color: #2196F3;
     border: 1px solid lightgray;
+    font-weight: bold;
     border-radius: 5px;
 }
 
@@ -525,6 +546,11 @@ input[type="range"] {
 
 .no-border {
     border: none;
+}
+
+.nobg:focus, .no-border:focus {
+    border: none;
+    outline: none !important;
 }
 
 input[type="range"]:focus {
@@ -740,4 +766,9 @@ i {
 
 .input-wrapper i {
     font-size: 16px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }

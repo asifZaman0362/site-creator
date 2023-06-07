@@ -8,6 +8,8 @@
   <script src="./state.js"></script>
   <script src="./index.js"></script>
   <script src="./fonts.js"></script>
+  <script src="./exporter.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/juice/dist/juice.min.js"></script>
   <link rel="stylesheet" href="./style.css">
   <script src="https://kit.fontawesome.com/c76a7d16cf.js" crossorigin="anonymous"></script>
 </head>
@@ -225,7 +227,13 @@
         </ul>
       </li>
     </ul>
-    <div id="playground">
+    <div id="playground" onclick="setEditorContext(this, true)">
+      <div id="placeholder">
+        <i class="fa-solid fa-pen-ruler"></i>
+        <p>
+        Start building by <b>Dragging and dropping</b> modules from the toolbar on the left!
+        </p>
+      </div>
       <div id="project-root" class="desktop"></div>
     </div>
     <div id="properties-panel">
@@ -284,10 +292,18 @@
           </div>
         </div>
       </div>
+      <div class="inspector-section" id="container-size">
+        <h4 class="inspector-section-heading">Container Size</h4>
+        <div class="input-container row">
+          <i class="fa-solid fa-arrows-left-right"></i>
+          <input type="number" name="" id="container-size-input" class="flex-grow no-border" onchange="onContainerSizeUpdate(this)">
+          <span class="pixel">px</span>
+        </div>
+      </div>
       <div class="inspector-section" id="border-radius-slider">
         <h4 class="inspector-section-heading">Border Radius</h3>
         <div class="slider-input">
-          <input type="range" id="border-radius-input" name="border-radius" min="0" max="100" onchange="onStyleChange(this, 'borderRadius', 'px')">
+          <input type="range" id="border-radius-input" name="border-radius" min="0" max="100" oninput="onStyleChange(this, 'borderRadius', 'px')">
           <div class="row" id="border-radius-editor">
             <div class="input-container">
               <i class="fa-solid fa-border-top-left"></i>
@@ -379,17 +395,17 @@
         <ul>
         </ul>
       </div>
-      <div class="inspector-section">
+      <div class="inspector-section" id="url-inspector">
         <div class="row no-border">
           <h4 class="inspector-section-heading">URL</h4>
           <label class="switch">
-            <input type="checkbox" name="" id="url-checkbox" onchange="onUrlToggled()">
+            <input type="checkbox" name="" id="url-checkbox" onchange="onToggleUrl(this)">
             <span class="slider round"></span>
           </label>
         </div>
         <div class="input-wrapper">
           <i class="fa-solid fa-link"></i>
-          <input type="text" name="" class="full" id="url-input-link" placeholder="https://" onchange="onUrlUpdated(this)">
+          <input type="text" name="" class="full" id="url-input-link" placeholder="https://" onchange="onUpdateUrl(this)">
         </div>
       </div>
       <div class="inspector-section" id="text-inspector">
@@ -500,7 +516,7 @@
         </div>
         <div class="box-shadow-container">
           <div class="box-shadow-icon"></div>
-          <span class="label">Box Shadow</span>
+          <span class="label" id="shadow-label">Box Shadow</span>
           <div class="row">
             <div class="input-container color-picker-input flex-grow no-border">
               <input class="color-preview" type="color" colorfor="shadowColor" onchange="colorUpdate(this)" id="shadow-color">
@@ -514,13 +530,13 @@
           <div class="shadow-grid">
             <label for="x-offset">X</label>
             <input type="range" name="" id="x-offset" min="-10" max="10" onchange="onShadowUpdate(this)">
-            <span class="value"></span>
+            <span class="value" id="x-offset-value">0</span>
             <label for="y-offset">y</label>
             <input type="range" name="" id="y-offset" min="-10" max="10" onchange="onShadowUpdate(this)">
-            <span class="value"></span>
+            <span class="value" id="y-offset-value">0</span>
             <label for="blur">Blur</label>
             <input type="range" name="" id="blur" min="-10" max="10" onchange="onShadowUpdate(this)">
-            <span class="value"></span>
+            <span class="value" id="blur-value">0</span>
           </div>
         </div>
       </div>

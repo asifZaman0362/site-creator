@@ -41,6 +41,8 @@ let alignInspector = null;
 let bgImageInspector = null;
 let borderInspector = null;
 
+let urls = [];
+
 let [desktopButton, mobileButton] = [null, null];
 
 let state = new VersionHistory();
@@ -130,6 +132,8 @@ function hideInspectorFields() {
   alignInspector?.classList.add('hidden');
   bgImageInspector?.classList.add('hidden');
   border?.classList.add('hidden');
+  shadowInspector.classList.add('hidden');
+  sel('#container-size').classList.add('hidden');
 }
 
 function getChildrenNodesRecursive(element) {
@@ -171,7 +175,6 @@ function getChildrenNodesRecursive(element) {
   }
   let button = document.createElement('i');
   button.classList.add('toggle', 'fa-solid');
-  console.debug(element);
   if (element.style.display == 'none') {
     button.classList.remove('fa-eye');
     button.classList.add('fa-eye-slash');
@@ -342,7 +345,6 @@ function updateTextInspector() {
       align = 'left';
     }
   }
-  console.log("align", align);
   switch (align) {
     case 'left':
       left.checked = true;
@@ -371,7 +373,7 @@ function updateTextInspector() {
   if (style.textTransform == 'capitalize') {
     capitalize.classList.add('checked');
   }
-  updateFontInspector(style.fontFamily.split(' ')[0], style.fontSize, style.fontWeight, style.fontStyle);
+  updateFontInspector(style.fontFamily.split(',')[0], style.fontSize, style.fontWeight, style.fontStyle);
   sel('#text-height-input').value = parseInt(style.lineHeight);
   sel('#text-width-input').value = parseInt(style.letterSpacing);
 }
@@ -383,14 +385,29 @@ function updateSrcInspector() {
 
 function updateUrlInspector() {
   urlInspector?.classList.remove('hidden');
-  urlInspector.querySelector('input').value = context.element.src;
+  if (context.type == 'A') {
+    sel('#url-checkbox').checked = url.enabled;
+    urlInspector.querySelector('input[type=text]').value = context.element.href;
+    return;
+  }
+  let url = urls.find(u => u.element == context.element);
+  if (url) {
+    urlInspector.querySelector('input[type=text]').value = url.value;
+    sel('#url-checkbox').checked = url.enabled;
+  } else {
+    urlInspector.querySelector('input[type=text]').value = '';
+    sel('#url-checkbox').checked = false;
+  }
 }
 
 function updateShadowInspector(text) {
   sel('#text-shadow').classList.remove('hidden');
+  if (text)
+    sel('#shadow-label').innerHTML = 'Text Shadow';
+  else
+    sel('#shadow-label').innerHTML = 'Box Shadow';
   sel('#shadow-checkbox').checked = !context.element.classList.contains('shadow-off');
   let shadow = text ? getComputedStyle(context.element).textShadow : getComputedStyle(context.element).boxShadow;
-  console.log(shadow);
   if (shadow.startsWith('#')) {
     try {
       let color = shadow.match(/#[a-zA-Z0-9]+/)[0];
@@ -402,8 +419,7 @@ function updateShadowInspector(text) {
     }
   } else if (shadow.startsWith('rgb')) {
     try {
-      let cols = shadow.match(/rgba\(.+\)/)[0].match(/[0-9\.]+/g);
-      console.log(cols);
+      let cols = shadow.match(/rgba?\(.+\)/)[0].match(/[0-9\.]+/g);
       let alpha = cols.length == 4 ? cols[3] : 1;
       let color = rgbStringToHex(shadow.match(/rgba?\(.+\)/)[0]);
       sel('#shadow-color-opacity').value = alpha * 100;
@@ -421,19 +437,64 @@ function updateShadowInspector(text) {
   }
   try {
     let matches = shadow.match(/\b\d+px\b/g);
-    sel('#x-offset').value = parseInt(matches[0]);
-    sel('#y-offset').value = parseInt(matches[1]);
-    sel('#blur').value = parseInt(matches[3]);
+    let target = sel('#x-offset');
+    target.value = parseInt(matches[0]);
+    let min = target.min
+    let max = target.max
+    let val = target.value
+    target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    sel('#x-offset-value').innerHTML = `${target.value}px`;
+    target = sel('#y-offset');
+    target.value = parseInt(matches[1]);
+    min = target.min
+    max = target.max
+    val = target.value
+    target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    sel('#y-offset-value').innerHTML = `${target.value}px`;
+    target = sel('#blur');
+    target.value = parseInt(matches[2]);
+    min = target.min
+    max = target.max
+    val = target.value
+    target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    sel('#blur-value').innerHTML = `${target.value}px`;
   } catch (err) {
-    sel('#x-offset').value = 0;
-    sel('#y-offset').value = 0;
-    sel('#blur').value = 0;
+    let target = sel('#x-offset');
+    target.value = 0;
+    let min = target.min
+    let max = target.max
+    let val = target.value
+    target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    sel('#x-offset-value').innerHTML = `${target.value}px`;
+    target = sel('#y-offset');
+    target.value = 0;
+    min = target.min
+    max = target.max
+    val = target.value
+    target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    sel('#y-offset-value').innerHTML = `${target.value}px`;
+    target = sel('#blur');
+    target.value = 0;
+    min = target.min
+    max = target.max
+    val = target.value
+    target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    sel('#blur-value').innerHTML = `${target.value}px`;
   }
 }
 
+function updateContainerSizeInspector() {
+  sel('#container-size').classList.remove('hidden');
+  sel('#container-size-input').value = parseInt(getComputedStyle(projectRoot).width);
+}
+
 function updateInspector() {
-  console.debug('update ', context);
   hideInspectorFields();
+  if (context.type == "CONTAINER") {
+    updateContainerSizeInspector();
+    updateBackgroundImageInput();
+    return;
+  }
   if (context.element.classList.contains('module')) {
     updateBorderRadiusInput();
     updateBorderInspector();
@@ -474,6 +535,7 @@ function updateInspector() {
       break;
     }
     case "IMG": {
+      updateUrlInspector();
       updateSizeInspector();
       updateBorderInspector();
       updateSrcInspector();
@@ -494,6 +556,7 @@ function updateInspector() {
       updateSizeInspector();
       updateShadowInspector(true);
       updateTextInspector();
+      updateUrlInspector();
       if (context.element.children.length == 0) {
         context.element.contentEditable = true;
         context.element.focus();
@@ -528,12 +591,11 @@ function updateInspector() {
 }
 
 // set the context for the editor to show appropriate options based on the element being edited
-function setEditorContext(item) {
-  console.debug('context', item);
+function setEditorContext(item, parent) {
   if (context.element) {
     context.element.contentEditable = false;
   }
-  context.type = item.tagName;
+  context.type = parent ? 'CONTAINER' : item.tagName;
   context.element = item;
   contextHint.innerHTML = `${context.type}`;
   let styles = getComputedStyle(item);
@@ -564,7 +626,6 @@ function highlightElement(element) {
 function makeContentEditableRecursive(element) {
   //element.contentEditable = true;
   element.addEventListener('mousemove', (event) => {
-    console.log('moved');
     highlightElement(element);
     event.stopPropagation();
   });
@@ -584,6 +645,81 @@ function makeContentEditableRecursive(element) {
       event.stopPropagation();
     });*/
     makeContentEditableRecursive(child);
+  }
+}
+
+function onToggleUrl(input) {
+  if (context.type == 'A') {
+    input.checked = url.enabled;
+    return;
+  }
+  let url = urls.find(url => url.element == context.element);
+  if (url) {
+    state.change({
+      type: "URL",
+      subtype: "toggle",
+      element: context.element,
+      from: url.enabled,
+      to: !url.enabled
+    });
+    url.enabled = !url.enabled;
+  } else {
+    url = { enabled: true, url: '', element: context.element };
+    context.element.dataset.urlId = generateRandomId();
+    urls.push(url);
+    state.change({
+      type: "URL",
+      subtype: "toggle",
+      element: context.element,
+      from: false,
+      to: true
+    });
+  }
+  input.checked = url.enabled;
+}
+
+function onUpdateUrl(input) {
+  if (context.type == 'A') {
+    state.change({
+      type: "Attribute",
+      element: context.element,
+      attribute: "href",
+      from: context.element.href,
+      to: input.value
+    });
+    context.element.href = input.value;
+    return;
+  }
+  let url = urls.find(url => url.element == context.element);
+  if (url) {
+    state.change({
+      type: "URL",
+      subtype: "updateValue",
+      element: context.element,
+      from: url.value,
+      to: input.value
+    });
+    url.value = input.value;
+  } else {
+    url = { enabled: false, url: '', element: context.element };
+    context.element.dataset.urlId = generateRandomId();
+    urls.push(url);
+    state.change({
+      type: "URL",
+      subtype: "updateValue",
+      element: context.element,
+      from: '',
+      to: input.value
+    });
+    url.value = input.value;
+  }
+}
+
+function updateRoot() {
+  if (projectRoot.children.length == 0) {
+    sel('#placeholder').style.visibility = 'visible';
+  } else {
+    sel('#placeholder').style.visibility = 'hidden';
   }
 }
 
@@ -642,6 +778,7 @@ function drop(ev) {
     }
   }
   relativeTarget = null;
+  updateRoot();
 }
 
 // this is the dragstart event handler for element previews in the menu since they are copied
@@ -690,6 +827,7 @@ function removeItem(item) {
     item.remove();
     item = null;
   }
+  updateRoot();
 }
 
 // entry point, sort of, fires when document loads
@@ -697,7 +835,6 @@ function setup() {
   templateList = document.querySelector("#template-list");
   let elements = document.getElementsByClassName("template-item-wrapper");
   for (let element of elements) {
-    console.debug(element);
     element.draggable = true;
     element.ondragstart = startDrag;
   }
@@ -719,7 +856,7 @@ function setup() {
   bgColorInput = document.querySelector("#bg-color");
   contextHint = document.querySelector("#context");
   highlight = document.querySelector("#highlight");
-  urlInspector = document.querySelector("#url-selector");
+  urlInspector = document.querySelector("#url-inspector");
   srcInspector = document.querySelector("#src-inspector");
   textInspector = document.querySelector("#text-inspector");
   sizeInspector = document.querySelector("#size-inspector");
@@ -735,12 +872,17 @@ function setup() {
   alignInspector = document.querySelector('#alignment-inspector');
   bgImageInspector = document.querySelector('#background-image-inspector');
   borderInspector = document.querySelector('#border');
+  shadowInspector = document.querySelector('#text-shadow');
   let sliders = document.querySelectorAll('input[type="range"]');
   sliders.forEach(item => {
     const min = item.min
     const max = item.max
     const val = item.value
-    item.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+    item.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%';
+    let valueLabel = sel(`#${item.id}-value`);
+    if (valueLabel) {
+      valueLabel.innerHTML = val + 'px';
+    }
     item.addEventListener('input', e => {
       let target = e.target
       if (e.target.type !== 'range') {
@@ -750,9 +892,14 @@ function setup() {
       const max = target.max
       const val = target.value
       target.style.backgroundSize = (val - min) * 100 / (max - min) + '% 100%'
+      let valueLabel = sel(`#${target.id}-value`);
+      if (valueLabel) {
+        valueLabel.innerHTML = val + 'px';
+      }
     })
   }
   );
+  setEditorContext(sel('#playground'), true);
 }
 
 window.addEventListener("load", setup);
@@ -771,10 +918,12 @@ function sel(query) {
 
 function onShadowUpdate() {
   let color = hexToRgb(sel('#shadow-color-hex').value, sel('#shadow-color-opacity').value);
-  console.log(color);
   let x = sel('#x-offset').value;
+  sel('#x-offset-value').innerHTML = `${x}px`;
   let y = sel('#y-offset').value;
+  sel('#y-offset-value').innerHTML = `${y}px`;
   let blur = sel('#blur').value;
+  sel('#blur-value').innerHTML = `${y}px`;
   if (textInspector.classList.contains('hidden') && context.element) {
     onStyleChangeUpdate(`${color} ${x}px ${y}px ${blur}px`, 'boxShadow', '');
   } else if (context.element) {
@@ -836,9 +985,17 @@ function createSpacingBoxImage() {
 function onSelectScreenSize(size) {
   if (size == 'desktop') {
     projectRoot.classList.replace('mobile', 'desktop');
+    updateInspector();
   } else {
     projectRoot.classList.replace('desktop', 'mobile');
+    updateInspector();
   }
+}
+
+function onContainerSizeUpdate(input) {
+  let size = input.value;
+  projectRoot.style.width = size + "px";
+  updateInspector();
 }
 
 function onSelectAlignment(input) {
@@ -1013,7 +1170,6 @@ function onBackgroundImageSrcChanged(input) {
       to: url
     });
     context.element.style.backgroundImage = url;
-    console.log(url);
   }
 }
 
@@ -1029,15 +1185,17 @@ function onBackgroundSizeChanged(input) {
       to: 'repeat'
     });
     context.element.style.backgroundRepeat = 'repeat';
+    context.element.style.backgroundSize = 'auto';
   } else {
     state.change({
       type: 'Style',
       element: context.element,
-      attribute: 'objectFit',
-      from: context.element.style.objectFit,
+      attribute: 'backgroundSize',
+      from: context.element.style.backgroundSize,
       to: value
     });
-    context.element.style.objectFit = value;
+    context.element.style.backgroundSize = value;
+    context.element.style.backgroundRepeat = 'no-repeat';
   }
 }
 
@@ -1153,7 +1311,6 @@ function showHighlightElement(element) {
   highlight.style.top = `${top}px`;
   highlight.style.width = `${width}px`;
   highlight.style.height = `${height}px`;
-  console.debug(left, width, height, top);
 }
 
 function removeHighlight() {
@@ -1181,6 +1338,7 @@ function updateThingFromHistory(change, undo) {
           parentElement.appendChild(element);
         }
       }
+      updateRoot();
       break;
     }
     case "Remove": {
@@ -1199,6 +1357,7 @@ function updateThingFromHistory(change, undo) {
       } else {
         element.remove();
       }
+      updateRoot();
       break;
     }
     case "Move": {
@@ -1248,8 +1407,16 @@ function updateThingFromHistory(change, undo) {
       }
       break;
     }
+    case "URL": {
+      let url = urls.find(url => url.element == change.element);
+      if (change.subtype == "toggle") {
+        url.enabled = undo ? change.from : change.to;
+      } else {
+        url.value = undo ? change.from : change.to;
+      }
+      break;
+    }
     default: {
-      console.debug(change);
       break;
     }
   }

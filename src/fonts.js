@@ -38,7 +38,6 @@ function addFont(font) {
     item => weights += item + ","
   );
   let qualifiedFontName = `${font}:${italic}${weights}`;
-  console.log(qualifiedFontName);
   WebFont.load({
     google: {
       families: [qualifiedFontName]
@@ -62,9 +61,8 @@ function setup() {
 }
 
 function updateFontInspector(family, size, weight, style) {
-  family = family.match(/[a-zA-Z0-9]+/)[0];
+  family = family.match(/[a-zA-Z0-9 ]+/)[0];
   let pos = allFonts.findIndex(f => f.family == family);
-  console.log(pos);
   if (pos >= 0) {
     list.selectedIndex = pos + 1;
     let x = 0, index = 0;
@@ -119,11 +117,9 @@ function getVariantInfo(fontFamily) {
 }
 
 function onSelectFont(_event) {
-  console.log("yo!");
   if (list && context.element) {
     let picked = list.options[list.selectedIndex].value;
     addFont(picked);
-    console.log("selecting ", picked);
     //context.element.style.fontFamily = picked;
     onStyleChangeUpdate(picked, 'fontFamily', '');
     while (weightList.options.length > 0)
@@ -134,7 +130,6 @@ function onSelectFont(_event) {
       weightOption.innerHTML = item;
       weightList.add(weightOption);
     });
-    console.debug(getVariantInfo(picked));
   }
 }
 
