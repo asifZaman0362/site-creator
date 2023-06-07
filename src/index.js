@@ -488,7 +488,14 @@ function updateContainerSizeInspector() {
   sel('#container-size-input').value = parseInt(getComputedStyle(projectRoot).width);
 }
 
-function updateInspector() {
+function hasEditableChildren(children) {
+  for (let i = 0; i < children.length; i++) {
+    if (children[i].tagName != 'BR') return false;
+  }
+  return true;
+}
+
+function updateInspector(event) {
   hideInspectorFields();
   if (context.type == "CONTAINER") {
     updateContainerSizeInspector();
@@ -557,10 +564,50 @@ function updateInspector() {
       updateShadowInspector(true);
       updateTextInspector();
       updateUrlInspector();
-      if (context.element.children.length == 0) {
-        context.element.contentEditable = true;
-        context.element.focus();
+      if (context.element.children.length == 0 || hasEditableChildren(context.element.children)) {
+        if (context.element.contentEditable != 'true') {
+          console.log(context.element.contentEditable);
+          console.log('hi');
+          context.element.contentEditable = 'true';
+          context.element.focus();
+          // Get the mouse coordinates relative to the contenteditable element
+          const x = event.clientX;
+          const y = event.clientY;
+          console.debug(x, y);
 
+          // Create a range object at the clicked position
+          const caret = document.caretPositionFromPoint(x, y);
+
+          // Remove any existing selections
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+
+          const range = document.createRange();
+          range.setStart(caret.offsetNode, caret.offset);
+          range.collapse(true);
+          console.debug(range);
+          // Add the new range to the selection
+          selection.addRange(range);
+        } else {
+          // Get the mouse coordinates relative to the contenteditable element
+          const x = event.clientX;
+          const y = event.clientY;
+          console.debug(x, y);
+
+          // Create a range object at the clicked position
+          const caret = document.caretPositionFromPoint(x, y);
+
+          // Remove any existing selections
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+
+          const range = document.createRange();
+          range.setStart(caret.offsetNode, caret.offset);
+          range.collapse(true);
+          console.debug(range);
+          // Add the new range to the selection
+          selection.addRange(range);
+        }
       } else {
         childrenInspector?.classList.remove('hidden');
         showChildren();
@@ -571,7 +618,11 @@ function updateInspector() {
       updateBorderInspector();
       updateShadowInspector(true);
       updateTextInspector();
-      context.element.contentEditable = true;
+      if (context.element.contentEditable != 'true') {
+        console.log('hi');
+        context.element.contentEditable = true;
+        context.element.focus();
+      }
       updateUrlInspector();
       break;
     }
@@ -591,8 +642,8 @@ function updateInspector() {
 }
 
 // set the context for the editor to show appropriate options based on the element being edited
-function setEditorContext(item, parent) {
-  if (context.element) {
+function setEditorContext(item, parent, event) {
+  if (context.element && context.element != item) {
     context.element.contentEditable = false;
   }
   context.type = parent ? 'CONTAINER' : item.tagName;
@@ -609,7 +660,7 @@ function setEditorContext(item, parent) {
   marginRightInput.value = parseInt(styles.marginBottom);
   bgColorInput.value = rgbStringToHex(styles.backgroundColor);
   fgColorInput.value = rgbStringToHex(styles.color);
-  updateInspector();
+  updateInspector(event);
 }
 
 function generateRandomId() {
@@ -634,7 +685,7 @@ function makeContentEditableRecursive(element) {
     event.stopPropagation();
   });
   element.addEventListener("click", (event) => {
-    setEditorContext(element)
+    setEditorContext(element, null, event)
     event.stopPropagation();
   });
   for (let child of element.children) {
