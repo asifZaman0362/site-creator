@@ -95,7 +95,7 @@ function hoverStopped() {
 
 // this creates the whole interface by taking provided templates, cleaning them up, tagging them and putting them
 // in their appropriate categories in the menu
-function createInterface() {}
+function createInterface() { }
 
 // event handler for when an item is being dragged over another existing element in the generated DOM
 // useful for ordering nodes

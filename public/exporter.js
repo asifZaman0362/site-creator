@@ -47,7 +47,7 @@ function exportHtml(workspace, urls) {
   copiedContent.querySelector('#placeholder').remove();
   removeEditableRecursive(copiedContent);
   let modifiedStyles = new Map();
-  getStylesRecursive(workspace, modifiedStyles);
+  getStylesRecursive(copiedContent, modifiedStyles);
   urls.forEach(url => {
     if (url.enabled && url.value) {
       let element = copiedContent.querySelector(`[data-url-id="${url.element.dataset.urlId}"`);
@@ -87,7 +87,7 @@ function exportHtml(workspace, urls) {
             for (const key of availableStyles) {
               const styleName = rule.style[key];
               let value = rule.style.getPropertyValue(styleName);
-              //element.style.setProperty(styleName, value);
+              element.style.setProperty(styleName, value);
             }
           }
         }
@@ -98,7 +98,14 @@ function exportHtml(workspace, urls) {
   }
   modifiedStyles.forEach((rules, element) => {
     rules.forEach(rule => {
-      element.style.setProperty(rule.name, rule.value);
+      console.debug(rule);
+      let match = rule.value.match(/url\("(.*)"\)/);
+      if (match) {
+        let newVal = `url('${match[1]}')`;
+        element.style.setProperty(rule.name, newVal);
+        console.log(newVal);
+      } else
+        element.style.setProperty(rule.name, rule.value);
     });
   });
   //recursiveInline(copiedContent);
@@ -119,7 +126,7 @@ function exportHtml(workspace, urls) {
   const exportedHtml = html;
   console.log(exportedHtml);
   const fileName = 'exported.html';
-  //downloadHTML(exportedHtml, fileName);
+  downloadHTML(exportedHtml, fileName);
 }
 
 function downloadHTML(htmlContent, fileName) {
